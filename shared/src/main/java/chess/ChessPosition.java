@@ -31,4 +31,9 @@ public class ChessPosition {
     public int getColumn() {
         return col;
     }
+
+    public boolean inBounds() {
+        return !(row < 1 || row > 8 || col < 1 || col > 8);
+    }
+
 }
