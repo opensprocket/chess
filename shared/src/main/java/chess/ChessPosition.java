@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.Objects;
 /**
  * Represents a single square position on a chess board
  * <p>
@@ -53,5 +54,10 @@ public class ChessPosition {
 
         // return true if row and col are equivalent
         return row == that.row && col == that.col;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, col);
     }
 }
