@@ -65,11 +65,15 @@ public class ChessMove {
         }
         // cast
         ChessMove that = (ChessMove) o;
-        return Objects.equals(startPosition, that.startPosition)
-                && Objects.equals(endPosition that.endPosition)
-                && promotionPiece == that.promotionPiece;
 
+        // compare
+        return Objects.equals(startPosition, that.startPosition)
+                && Objects.equals(endPosition, that.endPosition)
+                && promotionPiece == that.promotionPiece;
     }
 
-    
+    @Override
+    public int hashCode() {
+        return Objects.hash(startPosition, endPosition, promotionPiece);
+    }
 }
