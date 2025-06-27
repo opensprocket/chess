@@ -1,6 +1,10 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
+
+import chess.movecheckers.*;
 
 /**
  * Represents a single chess piece
@@ -11,7 +15,7 @@ import java.util.Collection;
 public class ChessPiece {
 
     private final ChessGame.TeamColor pieceColor;
-    private ChessPiece.PieceType type;
+    private final ChessPiece.PieceType type;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
@@ -52,6 +56,44 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+
+        ChessPiece piece = board.getPiece(myPosition);
+
+        Collection<ChessMove> moves = new ArrayList<>();
+
+        switch (piece.getPieceType()) {
+            case KING:
+                moves = addKingMoves(board, myPosition);
+                break;
+
+            case QUEEN:
+                moves = addQueenMoves(board, myPosition);
+                break;
+
+            case BISHOP:
+                moves = addBishopMoves(board, myPosition);
+                break;
+
+            case KNIGHT:
+                moves = addKnightMoves(board, myPosition);
+                break;
+
+            case ROOK:
+                moves = addRookMoves(board, myPosition);
+                break;
+
+            case PAWN:
+                moves = addPawnMoves(board, myPosition);
+                break;
+
+            default:
+                throw new IllegalStateException("Unknown piece type: " + piece);
+        }
+
+        return moves;
+    }
+
+
+
     }
 }
