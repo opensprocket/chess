@@ -113,4 +113,8 @@ public class ChessBoard {
         return Arrays.deepEquals(squares, that.squares);
     }
 
+    @Override public int hashCode() {
+        return Arrays.deepHashCode(squares);
+    }
+
 }
