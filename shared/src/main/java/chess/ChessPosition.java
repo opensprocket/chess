@@ -36,4 +36,22 @@ public class ChessPosition {
         return !(row < 1 || row > 8 || col < 1 || col > 8);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        // if o is self
+        if (this == o) {
+            return true;
+        }
+
+        // if o is null or not same class
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        // cast to position
+        ChessPosition that = (ChessPosition) o;
+
+        // return true if row and col are equivalent
+        return row == that.row && col == that.col;
+    }
 }
