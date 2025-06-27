@@ -88,11 +88,11 @@ public class ChessBoard {
         for (int y = 7; y >= 0; y--) {
             output.append("|");
             // fill left to right
-            for (int x = 7; x < 8 ; x++) {
+            for (int x = 0; x < 8 ; x++) {
                 output.append(squares[x][y] != null ? squares[x][y].toString() : " ");
                 output.append("|");
             }
-            //
+            // newline terminator
             output.append("\n");
         }
         return output.toString();
