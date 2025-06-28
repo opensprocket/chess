@@ -68,10 +68,6 @@ public class ChessPiece {
             default -> throw new IllegalStateException("Unknown state or type: " + piece);
         };
 
-        switch (piece.getPieceType()) {
-            case KING:
-                moves = addKingMoves(board, myPosition);
-                break;
         return moves;
     }
 
