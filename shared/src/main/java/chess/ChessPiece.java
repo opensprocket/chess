@@ -83,7 +83,9 @@ public class ChessPiece {
     private Collection<ChessMove> addQueenMoves(ChessBoard board, ChessPosition position) {
         Collection<ChessMove> validMoves = new ArrayList<>();
 
-        return moves;
+
+
+        return validMoves;
     }
 
 
