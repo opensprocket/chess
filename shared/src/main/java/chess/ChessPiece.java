@@ -90,5 +90,34 @@ public class ChessPiece {
 
 
 
+    private Collection<ChessMove> addPawnMoves(ChessBoard board, ChessPosition position) {
+        Collection<ChessMove> validMoves = new ArrayList<>();
+
+        // white pawn first move
+        if (pieceColor == ChessGame.TeamColor.WHITE ) {
+            // white pawn first move
+            if (position.getRow() == 2) {
+                // move 1
+                ChessPosition endPosition1 = new ChessPosition(position.getRow() + 1, position.getColumn());
+                ChessPiece destination1 = board.getPiece(endPosition1);
+
+                // move 2
+                ChessPosition endPosition2 = new ChessPosition(position.getRow() + 2, position.getColumn());
+                ChessPiece destination2 = board.getPiece(endPosition2);
+
+                if (destination1 == null && destination2 == null) {
+                    validMoves.add(new ChessMove(position, endPosition1, null));
+                }
+            }
+            // white pawn single move
+
+
+        }
+        if (pieceColor == ChessGame.TeamColor.BLACK) {
+            // black pawn first move
+            
+        }
+
+        return validMoves;
     }
 }
