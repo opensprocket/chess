@@ -60,6 +60,15 @@ public class ChessPiece {
         ChessPiece piece = board.getPiece(myPosition);
 
         Collection<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = switch (piece.getPieceType()) {
+            case KING -> addKingMoves(board, myPosition);
+            case QUEEN -> addQueenMoves(board, myPosition);
+            case BISHOP -> addBishopMoves(board, myPosition);
+            case KNIGHT -> addKnightMoves(board, myPosition);
+            case ROOK -> addRookMoves(board, myPosition);
+            case PAWN -> addPawnMoves(board, myPosition);
+            default -> throw new IllegalStateException("Unknown state or type: " + piece);
+        };
 
         switch (piece.getPieceType()) {
             case KING:
