@@ -72,30 +72,20 @@ public class ChessPiece {
             case KING:
                 moves = addKingMoves(board, myPosition);
                 break;
+        return moves;
+    }
 
-            case QUEEN:
-                moves = addQueenMoves(board, myPosition);
-                break;
+    private Collection<ChessMove> addKingMoves(ChessBoard board, ChessPosition position) {
+        Collection<ChessMove> validMoves = new ArrayList<>();
 
-            case BISHOP:
-                moves = addBishopMoves(board, myPosition);
-                break;
 
-            case KNIGHT:
-                moves = addKnightMoves(board, myPosition);
-                break;
 
-            case ROOK:
-                moves = addRookMoves(board, myPosition);
-                break;
+        return validMoves;
+    }
 
-            case PAWN:
-                moves = addPawnMoves(board, myPosition);
-                break;
 
-            default:
-                throw new IllegalStateException("Unknown piece type: " + piece);
-        }
+    private Collection<ChessMove> addQueenMoves(ChessBoard board, ChessPosition position) {
+        Collection<ChessMove> validMoves = new ArrayList<>();
 
         return moves;
     }
