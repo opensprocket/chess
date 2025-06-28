@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
-import chess.movecheckers.*;
 
 /**
  * Represents a single chess piece
@@ -59,7 +58,6 @@ public class ChessPiece {
 
         ChessPiece piece = board.getPiece(myPosition);
 
-        Collection<ChessMove> moves = new ArrayList<>();
         Collection<ChessMove> moves = switch (piece.getPieceType()) {
             case KING -> addKingMoves(board, myPosition);
             case QUEEN -> addQueenMoves(board, myPosition);
