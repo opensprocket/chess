@@ -56,4 +56,14 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         return new ArrayList<>();
     }
+
+    /**
+     * Checks if a position is on the board or not
+     * @param row position to check
+     * @param col position to check
+     * @return bool indicating whether position is in bounds
+     */
+    private boolean isValidPosition(int row, int col) {
+        return (row >= 1 && row <= 8 && col >= 1 && col <= 8);
+    }
 }
