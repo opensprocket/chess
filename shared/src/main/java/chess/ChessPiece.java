@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -18,6 +19,25 @@ public class ChessPiece {
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.color = pieceColor;
         this.type = type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, type);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return  false;
+        }
+
+        ChessPiece that = (ChessPiece) o;
+        return color == that.color && type == that.type;
     }
 
     /**
@@ -57,10 +77,11 @@ public class ChessPiece {
 
         MoveCalculator moves = switch (type) {
             case BISHOP -> new BishopMoveGenerator();
-            case QUEEN -> new QueenMoveGenerator();
-            case ROOK -> new RookMoveGenerator();
-            case KING -> new KingMoveGenerator();
-            case KNIGHT -> new KnightMoveGenerator();
+//            case QUEEN -> new QueenMoveGenerator();
+//            case ROOK -> new RookMoveGenerator();
+//            case KING -> new KingMoveGenerator();
+//            case KNIGHT -> new KnightMoveGenerator();
+//            case PAWN -> new PawnMoveGenerator();
             default -> throw new UnsupportedOperationException("MoveCalculator not implemented for " + type);
         };
 
