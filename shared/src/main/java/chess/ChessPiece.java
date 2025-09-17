@@ -81,7 +81,7 @@ public class ChessPiece {
             case ROOK -> new RookMoveGenerator();
             case KING -> new KingMoveGenerator();
             case KNIGHT -> new KnightMoveGenerator();
-//            case PAWN -> new PawnMoveGenerator();
+            case PAWN -> new PawnMoveGenerator();
             default -> throw new UnsupportedOperationException("MoveCalculator not implemented for " + type);
         };
 
