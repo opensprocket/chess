@@ -46,7 +46,7 @@ public class KingMoveGenerator implements MoveCalculator {
                     if (target.getTeamColor() != myTeam) {
                         moves.add(new ChessMove(from, to, null));
                     }
-                    break; // friendly piece
+                    // do nothing, friendly piece
                 }
             }
         }
