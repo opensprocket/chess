@@ -8,7 +8,10 @@ public class BishopMoveGenerator implements MoveCalculator {
 
     // relative directions for moves (up right, up left, down right, down left)
     private static final int[][] DIRECTIONS = {
-            {1,1},{1,-1},{-1,1},{-1,-1}
+            {1,1},  // up right
+            {1,-1}, // up left
+            {-1,1}, // down right
+            {-1,-1} // down left
     };
 
     @Override
@@ -16,7 +19,9 @@ public class BishopMoveGenerator implements MoveCalculator {
         Collection<ChessMove> moves = new ArrayList<>();
 
         ChessPiece piece = board.getPiece(from);
-        if (piece == null) return moves;
+        if (piece == null) {
+            return moves;
+        }
 
         ChessGame.TeamColor myTeam = piece.getTeamColor();
 
