@@ -13,7 +13,7 @@ public class BishopMoveGenerator implements MoveCalculator {
 
     @Override
     public Collection<ChessMove> possibleMoves(ChessBoard board, ChessPosition from) {
-        List<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
 
         ChessPiece piece = board.getPiece(from);
         if (piece == null) return moves;
@@ -21,8 +21,8 @@ public class BishopMoveGenerator implements MoveCalculator {
         ChessGame.TeamColor myTeam = piece.getTeamColor();
 
         for (int[] dir : DIRECTIONS) {
-            int row = from.getRow();
-            int col = from.getColumn();
+            int row = from.getRow() + dir[0];
+            int col = from.getColumn() + dir[1];
 
             while (onTheBoard(row, col)) {
                 // check
