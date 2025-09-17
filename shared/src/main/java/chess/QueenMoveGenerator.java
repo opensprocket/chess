@@ -19,7 +19,7 @@ public class QueenMoveGenerator implements MoveCalculator {
 
     @Override
     public Collection<ChessMove> possibleMoves(ChessBoard board, ChessPosition from) {
-        List<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
 
         ChessPiece piece = board.getPiece(from);
 
