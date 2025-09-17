@@ -11,7 +11,7 @@ public class ChessBoard {
     final private ChessPiece[][] board = new ChessPiece[8][8];
 
     public ChessBoard() {
-        
+
     }
 
     /**
@@ -41,8 +41,8 @@ public class ChessBoard {
      */
     public void resetBoard() {
         // loop and set all positions to empty
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 7; j++) {
                 board[i][j] = null;
             }
         }
@@ -60,7 +60,7 @@ public class ChessBoard {
         addPiece(new ChessPosition(1,8), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
 
         // white pawns
-        for (int j = 0; j < 8; j++) {
+        for (int j = 1; j < 8; j++) {
             addPiece(new ChessPosition(2, j), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
         }
 
@@ -75,8 +75,9 @@ public class ChessBoard {
         addPiece(new ChessPosition(8,8), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
 
         // black pawns
-        for (int j = 0; j < 8; j++) {
+        for (int j = 1; j < 8; j++) {
             addPiece(new ChessPosition(7, j), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
         }
     }
 }
+
