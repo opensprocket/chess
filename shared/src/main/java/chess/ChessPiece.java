@@ -77,7 +77,7 @@ public class ChessPiece {
 
         MoveCalculator moves = switch (type) {
             case BISHOP -> new BishopMoveGenerator();
-//            case QUEEN -> new QueenMoveGenerator();
+            case QUEEN -> new QueenMoveGenerator();
 //            case ROOK -> new RookMoveGenerator();
 //            case KING -> new KingMoveGenerator();
 //            case KNIGHT -> new KnightMoveGenerator();
