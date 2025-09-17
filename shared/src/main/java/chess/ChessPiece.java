@@ -54,7 +54,17 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return new ArrayList<>();
+
+        MoveCalculator moves = switch (type) {
+            case BISHOP -> new BishopMoveGenerator();
+            case QUEEN -> new QueenMoveGenerator();
+            case ROOK -> new RookMoveGenerator();
+            case KING -> new KingMoveGenerator();
+            case KNIGHT -> new KnightMoveGenerator();
+            default -> throw new UnsupportedOperationException("MoveCalculator not implemented for " + type);
+        };
+
+        return moves.possibleMoves(board, myPosition);
     }
 
     /**
@@ -63,7 +73,7 @@ public class ChessPiece {
      * @param col position to check
      * @return bool indicating whether position is in bounds
      */
-    private boolean isValidPosition(int row, int col) {
+    private boolean onTheBoard(int row, int col) {
         return (row >= 1 && row <= 8 && col >= 1 && col <= 8);
     }
 }
