@@ -39,6 +39,40 @@ public class ChessBoard {
     }
 
     /**
+     * Moves a piece on the board while accounting for promotions.
+     * Does not check if a move is legal, always executes regardless of legality
+     * @param move The move to be made
+     * @throws InvalidMoveException is thrown when trying to move nothing
+     */
+    public void movePiece (ChessMove move) throws InvalidMoveException {
+
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
+
+        // get piece info
+        ChessPiece piece = getPiece(startPosition);
+
+        // can't move empty squares
+        if (piece == null) {
+            throw new InvalidMoveException("No piece at start position");
+        }
+
+        // working copy of the piece
+        ChessPiece movedPiece = piece;
+
+        // piece is promoted, use that instead of original
+        if (move.getPromotionPiece() != null) {
+            movedPiece = new ChessPiece(movedPiece.getTeamColor(), move.getPromotionPiece());
+        }
+
+        // clear staring square
+        board[startPosition.getRow() - 1][startPosition.getColumn() - 1] = null;
+
+        // place piece by overwriting
+        board[endPosition.getRow() - 1][endPosition.getColumn() - 1] = movedPiece;
+    }
+
+    /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */
