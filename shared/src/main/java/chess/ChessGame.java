@@ -1,6 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -11,9 +13,24 @@ import java.util.Collection;
 public class ChessGame {
 
     public TeamColor currentTurn = TeamColor.WHITE; // start on White turn by default
+    private ChessBoard board = new ChessBoard();
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return currentTurn == chessGame.currentTurn && Objects.equals(board, chessGame.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(currentTurn, board);
+    }
 
     public ChessGame() {
-
+        board.resetBoard();
     }
 
     /**
@@ -48,7 +65,26 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> validMoves = new ArrayList<>();
+
+        ChessPiece piece = board.getPiece(startPosition);
+
+        // no piece at position
+        if (piece == null) {
+            return validMoves;
+        }
+
+        // get potential moves
+        Collection<ChessMove> potentialMoves = piece.pieceMoves(board, startPosition);
+
+        // working copy of the board
+        ChessBoard tempBoard = getBoard();
+
+        // make move
+
+
+
+        return validMoves;
     }
 
     /**
@@ -107,6 +143,6 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return board;
     }
 }
