@@ -13,6 +13,8 @@ public class ChessBoard {
 
     final private ChessPiece[][] board = new ChessPiece[8][8];
 
+    private ChessPosition enPassantTgtSquare = null;
+
     public ChessBoard() {
 
     }
@@ -68,6 +70,24 @@ public class ChessBoard {
         // clear staring square
         board[startPosition.getRow() - 1][startPosition.getColumn() - 1] = null;
 
+        // en passant logic
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN &&
+                startPosition.getColumn() != endPosition.getColumn() &&
+                getPiece(endPosition) == null) {
+
+            // calculate position of captured pawn
+            int captRow = startPosition.getRow();
+            int captCol = endPosition.getColumn();
+
+            ChessPosition captPawnPos = new ChessPosition(captRow, captCol);
+
+            // remove captured pawn
+            board[captPawnPos.getRow() - 1][captPawnPos.getColumn() - 1] = null;
+
+        }
+
+        // end en passant logic
+
         // place piece by overwriting
         board[endPosition.getRow() - 1][endPosition.getColumn() - 1] = movedPiece;
     }
@@ -83,6 +103,9 @@ public class ChessBoard {
                 board[i][j] = null;
             }
         }
+
+        // clear en passant square
+        this.enPassantTgtSquare = null;
 
         // populate game pieces
 
@@ -129,6 +152,14 @@ public class ChessBoard {
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(board);
+    }
+
+    public ChessPosition getEnPassantTgtSquare() {
+        return enPassantTgtSquare;
+    }
+
+    public void setEnPassantTgtSquare(ChessPosition enPassantTgtSquare) {
+        this.enPassantTgtSquare = enPassantTgtSquare;
     }
 }
 

@@ -59,7 +59,31 @@ public class PawnMoveGenerator implements MoveCalculator {
             }
         }
 
-        // Optional: en passant logic
+        // en passant logic
+        ChessPosition enPassantTgtSquare = board.getEnPassantTgtSquare();
+
+        if (enPassantTgtSquare != null) {
+            int tgtRow = enPassantTgtSquare.getRow();
+            int tgtCol = enPassantTgtSquare.getColumn();
+
+            // if WHITE, pawn should be on row 5
+            // if BLACK, pawn should be on row 4
+            int enPassantRow = (myTeam == ChessGame.TeamColor.WHITE) ? 5 : 4;
+
+            if (from.getRow() == enPassantRow) {
+
+                // check col adjacency, absolute needed because of how column is handled above
+                if (Math.abs(from.getColumn() - tgtCol) == 1) {
+                    ChessPosition endPos = new ChessPosition(nextRow, tgtCol);
+
+                    // does the landing square match the en passant tgt square?
+                    if (endPos.equals(enPassantTgtSquare)) {
+                        moves.add(new ChessMove(from, endPos, null));
+                    }
+                }
+            }
+        }
+        // end en passant logic
 
         return moves;
     }

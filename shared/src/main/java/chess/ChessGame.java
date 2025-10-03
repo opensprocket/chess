@@ -176,6 +176,27 @@ public class ChessGame {
         // move piece
         board.movePiece(move);
 
+        // en passant state tracking
+        ChessPosition pawnStart = move.getStartPosition();
+        ChessPosition pawnEnd = move.getEndPosition();
+        ChessPiece movedPiece = board.getPiece(pawnEnd);
+
+        // clear target square
+        board.setEnPassantTgtSquare(null);
+
+        if (movedPiece != null && movedPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            int startRow = pawnStart.getRow();
+            int endRow = pawnEnd.getRow();
+
+            // check for two square move
+            if (Math.abs(startRow - endRow) == 2) {
+                // en passant square has been passed
+                int tgtRow = (startRow + endRow) / 2;
+                ChessPosition target = new ChessPosition(tgtRow, pawnEnd.getColumn());
+                board.setEnPassantTgtSquare(target);
+            }
+        }
+
         // change turn
         currentTurn = (currentTurn == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
 
