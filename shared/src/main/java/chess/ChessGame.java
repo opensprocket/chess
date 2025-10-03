@@ -251,4 +251,27 @@ public class ChessGame {
         return board;
     }
 
+    /**
+     * Helper function that returns all possible moves for a team
+     * @param teamColor Team to check moves for
+     * @return Collection<ChessMove> allValidMoves for team
+     */
+    private Collection<ChessMove> allValidMoves(TeamColor teamColor) {
+        Collection<ChessMove> allValidMoves = new ArrayList<>();
+
+        // iterate through board
+        for (int row = 1; row <= 8 ; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition tempPos = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(tempPos);
+
+                // if not empty or other team, calculate valid moves
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    allValidMoves.addAll(validMoves(tempPos));
+                }
+            }
+        }
+        // return all possible moves for team
+        return allValidMoves;
+    }
 }
