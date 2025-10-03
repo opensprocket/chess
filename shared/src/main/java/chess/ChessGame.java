@@ -162,8 +162,8 @@ public class ChessGame {
 
             // compare move start and end
             for (ChessMove allowedMove : allowedMoves) {
-                if (allowedMove.getEndPosition() == move.getEndPosition() &&
-                        allowedMove.getStartPosition() == move.getEndPosition()) {
+                if (allowedMove.getEndPosition().equals(move.getEndPosition()) &&
+                        allowedMove.getStartPosition().equals(move.getStartPosition())) {
                     found = true; // end search
                     break;
                 }
