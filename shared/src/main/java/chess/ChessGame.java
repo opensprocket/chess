@@ -306,10 +306,6 @@ public class ChessGame {
         }
 
         // castling logic and state tracking
-
-//        ChessPosition castlePos = move.getStartPosition();
-//        ChessPiece castlePiece = board.getPiece(castlePos);
-
         if (piece.getPieceType() == ChessPiece.PieceType.KING) {
             if (piece.getTeamColor() == TeamColor.WHITE) {
                 whiteKingMoved = true;
@@ -335,7 +331,6 @@ public class ChessGame {
 
         // change turn
         currentTurn = (currentTurn == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
-
     }
 
     /**
