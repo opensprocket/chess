@@ -94,15 +94,44 @@ public class ChessGame {
     /**
      *
      * @param move ChessMove to compare
-     * @param playerColor TeamColor who owns the King
-     * @return
+     * @param playerColor TeamColor who is making the move
+     * @return boolean value of vulnerability
      */
 
-    private boolean makesKingVulnerable(ChessMove move, TeamColor playerColor) {
+    private boolean moveMakesKingVulnerable(ChessMove move, TeamColor playerColor) {
+        // copy the board
 
-        // TODO: write me :)
+        ChessBoard tempBoard = new ChessBoard();
+        ChessBoard originalBoard = this.board;
 
-        return false;
+        // clone board
+        for (int row = 1; row <= 8 ; row++) {
+            for (int col = 1; col <= 8 ; col++) {
+                ChessPosition pos = new ChessPosition(row,col);
+                ChessPiece piece = originalBoard.getPiece(pos);
+
+                if (piece != null) {
+                    tempBoard.addPiece(pos, piece);
+                }
+            }
+
+        }
+
+        try {
+            tempBoard.movePiece(move);
+        } catch (InvalidMoveException e) {
+            return true;
+        }
+
+        // swap boards before running check
+        setBoard(tempBoard);
+
+        boolean isVulnerable = isInCheck(playerColor);
+
+        // restore board state
+        setBoard(originalBoard);
+
+        return isVulnerable;
     }
 
     /**
