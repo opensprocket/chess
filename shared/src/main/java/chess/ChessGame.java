@@ -214,7 +214,6 @@ public class ChessGame {
         if (!isInCheck(teamColor)) {
             return false; // cannot be checkmate if not in check
         }
-
     }
 
     /**
