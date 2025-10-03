@@ -214,6 +214,8 @@ public class ChessGame {
         if (!isInCheck(teamColor)) {
             return false; // cannot be checkmate if not in check
         }
+        // if the collection is empty, then no valid moves remaining
+        return allValidMoves(teamColor).isEmpty();
     }
 
     /**
