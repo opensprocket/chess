@@ -83,7 +83,7 @@ public class ChessGame {
         Collection<ChessMove> potentialMoves = piece.pieceMoves(board, startPosition);
 
         for (ChessMove move : potentialMoves) {
-            if (!makesKingVulnerable(move, playerColor)) {
+            if (!moveMakesKingVulnerable(move, playerColor)) {
                 validMoves.add(move);
             }
         }
