@@ -97,7 +97,6 @@ public class ChessGame {
      * @param playerColor TeamColor who is making the move
      * @return boolean value of vulnerability
      */
-
     private boolean moveMakesKingVulnerable(ChessMove move, TeamColor playerColor) {
         // copy the board
 
@@ -212,7 +211,10 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (!isInCheck(teamColor)) {
+            return false; // cannot be checkmate if not in check
+        }
+
     }
 
     /**
