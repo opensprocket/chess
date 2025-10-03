@@ -231,7 +231,7 @@ public class ChessGame {
 
                     // check all possible moves against the king's location
                     for (ChessMove move : enemyMoves) {
-                        if (move.getEndPosition().equals(kingPos)) {
+                        if (move.getEndPosition() ==kingPos) {
                             return true; // king is being attacked
                         }
                     }
