@@ -65,8 +65,10 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        // create bucket for returned data
         Collection<ChessMove> validMoves = new ArrayList<>();
 
+        // get the piece at the position
         ChessPiece piece = board.getPiece(startPosition);
 
         // no piece at position
@@ -74,17 +76,33 @@ public class ChessGame {
             return validMoves;
         }
 
+        // who owns the piece at start position?
+        ChessGame.TeamColor playerColor = piece.getTeamColor();
+
         // get potential moves
         Collection<ChessMove> potentialMoves = piece.pieceMoves(board, startPosition);
 
-        // working copy of the board
-        ChessBoard tempBoard = getBoard();
-
-        // make move
-
-
-
+        for (ChessMove move : potentialMoves) {
+            if (!makesKingVulnerable(move, playerColor)) {
+                validMoves.add(move);
+            }
+        }
+        // return valid choices
         return validMoves;
+    }
+
+    /**
+     *
+     * @param move ChessMove to compare
+     * @param playerColor TeamColor who owns the King
+     * @return
+     */
+
+    private boolean makesKingVulnerable(ChessMove move, TeamColor playerColor) {
+
+        // TODO: write me :)
+
+        return false;
     }
 
     /**
