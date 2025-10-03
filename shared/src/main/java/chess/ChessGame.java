@@ -136,8 +136,26 @@ public class ChessGame {
 
         ChessGame.TeamColor enemyColor = (teamColor == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
 
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <=8 ; col++) {
+                ChessPosition tempPos = new ChessPosition(row,col);
+                ChessPiece tempPiece = board.getPiece(tempPos);
 
-        return;
+                // if enemy piece, get moves
+                if (tempPiece != null && tempPiece.getTeamColor() == enemyColor) {
+                    Collection<ChessMove> enemyMoves = tempPiece.pieceMoves(board, tempPos);
+
+                    // check all possible moves against the king's location
+                    for (ChessMove move : enemyMoves) {
+                        if (move.getEndPosition().equals(kingPos)) {
+                            return true; // king is being attacked
+                        }
+                    }
+                }
+            }
+        }
+        // search space exhausted, no piece can capture king so return false
+        return false;
     }
 
     /**
