@@ -30,7 +30,7 @@ public class ChessGame {
     }
 
     public ChessGame() {
-        board.resetBoard();
+        board.resetBoard(); // initialize to blank state
     }
 
     /**
@@ -104,7 +104,40 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        // part 1
+        // find king position
+        ChessPosition kingPos = null;
+
+        for (int row = 1; row <=8 ; row++) {
+            for (int col = 1; col <= 8 ; col++) {
+                // current cell
+                ChessPosition tempPos = new ChessPosition(row,col);
+                ChessPiece tempPiece = board.getPiece(tempPos);
+
+                // check null, team and type
+                if (tempPiece != null
+                        && tempPiece.getTeamColor() == teamColor
+                        && tempPiece.getPieceType() == ChessPiece.PieceType.KING ) {
+                    kingPos = tempPos;
+                    break; // terminate search
+                }
+            }
+        }
+
+        // if no king found, return false
+        // you should never get to this point
+        // anarchy chess mode?
+        if (kingPos == null) {
+            return false;
+        }
+
+        // part 2
+        // find enemy pieces
+
+        ChessGame.TeamColor enemyColor = (teamColor == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
+
+
+        return;
     }
 
     /**
