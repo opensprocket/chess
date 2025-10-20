@@ -93,53 +93,7 @@ public class ChessGame {
 
         // castling logic
         if (piece.getPieceType() == ChessPiece.PieceType.KING && !isInCheck(playerColor)) {
-            if (playerColor == TeamColor.WHITE) {
-                if (startPosition.equals(new ChessPosition(1,5))) {
-                    // kingside castle
-                    if (!whiteKingMoved &&
-                            !whiteKingsideRookMoved &&
-                            board.getPiece(new ChessPosition(1,6)) == null &&
-                            board.getPiece(new ChessPosition(1,7)) == null) {
-                        if (!isSquareAttacked(new ChessPosition(1,6), TeamColor.BLACK)) {
-                            potentialMoves.add(new ChessMove(startPosition, new ChessPosition(1,7), null));
-                        }
-                    }
-                    // queenside castle
-                    if (!whiteKingMoved &&
-                            !whiteQueensideRookMoved &&
-                            board.getPiece(new ChessPosition(1,2)) == null &&
-                            board.getPiece(new ChessPosition(1,3)) == null &&
-                            board.getPiece(new ChessPosition(1,4)) == null) {
-                        if (!isSquareAttacked(new ChessPosition(1,4), TeamColor.BLACK)) {
-                            potentialMoves.add(new ChessMove(startPosition, new ChessPosition(1,3), null));
-                        }
-                    }
-                }
-
-            } else { // black
-                if (startPosition.equals(new ChessPosition(8,5))) {
-                    // kingside castle
-                    if(!blackKingMoved &&
-                            !blackKingSideRookMoved &&
-                            board.getPiece(new ChessPosition(8,6)) == null &&
-                            board.getPiece(new ChessPosition(8,7)) == null) {
-                        if (!isSquareAttacked(new ChessPosition(8,6), TeamColor.WHITE)) {
-                            potentialMoves.add(new ChessMove(startPosition, new ChessPosition(8,7), null));
-                        }
-                    }
-
-                    // queenside castle
-                    if (!blackKingMoved &&
-                            !blackQueenSideRookMoved &&
-                            board.getPiece(new ChessPosition(8,2)) == null &&
-                            board.getPiece(new ChessPosition(8,3)) == null &&
-                            board.getPiece(new ChessPosition(8,4)) == null) {
-                        if (!isSquareAttacked(new ChessPosition(8,4), TeamColor.WHITE)) {
-                            potentialMoves.add(new ChessMove(startPosition, new ChessPosition(8,3), null));
-                        }
-                    }
-                }
-            }
+            potentialMoves.addAll(getCastlingMoves(startPosition, playerColor));
         }
 
         // end castling logic
@@ -156,7 +110,7 @@ public class ChessGame {
     /**
      * @param position square to check
      * @param teamColor of the attacking team
-     * @return boolean value of whether or not the square is safe
+     * @return boolean value of whether the square is safe
      */
     private boolean isSquareAttacked(ChessPosition position, TeamColor teamColor) {
         // iterate through board
@@ -464,5 +418,71 @@ public class ChessGame {
         }
         // return all possible moves for team
         return allValidMoves;
+    }
+
+    /**
+     * Handles all castling logic for white and black teams
+     * @param startPosition starting position of the piece in question
+     * @param playerColor team of the player
+     * @return Collection<ChessMove> of valid moves related to castling
+     */
+    private Collection<ChessMove> getCastlingMoves (ChessPosition startPosition, TeamColor playerColor) {
+        Collection<ChessMove> potentialMoves = new ArrayList<>();
+
+        int kingRow = playerColor == TeamColor.WHITE ? 1 : 8;
+        int kingCol = 5;
+
+        if (!startPosition.equals(new ChessPosition(kingRow,kingCol))) {
+            return potentialMoves;
+        }
+
+        if (playerColor == TeamColor.WHITE) {
+            if (startPosition.equals(new ChessPosition(kingRow,5))) {
+                // kingside castle
+                if (!whiteKingMoved &&
+                        !whiteKingsideRookMoved &&
+                        board.getPiece(new ChessPosition(kingRow,6)) == null &&
+                        board.getPiece(new ChessPosition(kingRow,7)) == null) {
+                    if (!isSquareAttacked(new ChessPosition(kingRow,6), TeamColor.BLACK)) {
+                        potentialMoves.add(new ChessMove(startPosition, new ChessPosition(kingRow,7), null));
+                    }
+                }
+                // queenside castle
+                if (!whiteKingMoved &&
+                        !whiteQueensideRookMoved &&
+                        board.getPiece(new ChessPosition(kingRow,2)) == null &&
+                        board.getPiece(new ChessPosition(kingRow,3)) == null &&
+                        board.getPiece(new ChessPosition(kingRow,4)) == null) {
+                    if (!isSquareAttacked(new ChessPosition(kingRow,4), TeamColor.BLACK)) {
+                        potentialMoves.add(new ChessMove(startPosition, new ChessPosition(kingRow,3), null));
+                    }
+                }
+            }
+
+        } else { // black
+            if (startPosition.equals(new ChessPosition(kingRow,5))) {
+                // kingside castle
+                if(!blackKingMoved &&
+                        !blackKingSideRookMoved &&
+                        board.getPiece(new ChessPosition(kingRow,6)) == null &&
+                        board.getPiece(new ChessPosition(kingRow,7)) == null) {
+                    if (!isSquareAttacked(new ChessPosition(kingRow,6), TeamColor.WHITE)) {
+                        potentialMoves.add(new ChessMove(startPosition, new ChessPosition(kingRow,7), null));
+                    }
+                }
+
+                // queenside castle
+                if (!blackKingMoved &&
+                        !blackQueenSideRookMoved &&
+                        board.getPiece(new ChessPosition(kingRow,2)) == null &&
+                        board.getPiece(new ChessPosition(kingRow,3)) == null &&
+                        board.getPiece(new ChessPosition(kingRow,4)) == null) {
+                    if (!isSquareAttacked(new ChessPosition(kingRow,4), TeamColor.WHITE)) {
+                        potentialMoves.add(new ChessMove(startPosition, new ChessPosition(kingRow,3), null));
+                    }
+                }
+            }
+        }
+        return potentialMoves;
     }
 }
