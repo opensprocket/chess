@@ -2,7 +2,7 @@ package service;
 
 import dataaccess.MemoryDataAccess;
 import datamodel.RegistrationResult;
-import datamodel.User;
+import datamodel.UserData;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +16,7 @@ class UserServiceTest {
 
     @Test
     void register() {
-        var user = new User("joe", "1234", "joe@joe");
+        var user = new UserData("joe", "1234", "joe@joe");
         var authTok = "xyz";
 
         var da = new MemoryDataAccess();

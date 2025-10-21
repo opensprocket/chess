@@ -3,12 +3,10 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccess;
 import dataaccess.MemoryDataAccess;
-import datamodel.User;
+import datamodel.UserData;
 import io.javalin.*;
 import io.javalin.http.Context;
 import service.UserService;
-
-import java.util.Map;
 
 public class Server {
 
@@ -31,7 +29,7 @@ public class Server {
     private void register(Context ctx) {
         var serializer = new Gson();
         String reqJson = ctx.body();
-        var req = serializer.fromJson(reqJson, User.class);
+        var req = serializer.fromJson(reqJson, UserData.class);
 
         // call to the registration service
         var res = userService.register(req);

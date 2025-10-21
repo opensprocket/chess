@@ -1,8 +1,13 @@
 package dataaccess;
 
-import datamodel.User;
+import datamodel.UserData;
 
 public interface DataAccess {
-    void saveUser(User user);
+    void saveUser(UserData user);
     void getUser(String user);
+
+
+    void clear() throws DataAccessException;
+    void createUser(UserData user);
+    
 }

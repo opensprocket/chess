@@ -1,6 +1,7 @@
 package dataaccess;
 
 import dataaccess.MemoryDataAccess;
+import datamodel.UserData;
 import org.junit.jupiter.api.*;
 
 public class DataAccessTest {
