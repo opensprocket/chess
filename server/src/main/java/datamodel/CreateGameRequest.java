@@ -1,3 +1,3 @@
 package datamodel;
 
-public record CreateGameRequest(int gameID) {}
+public record CreateGameRequest(String gameName) {}
