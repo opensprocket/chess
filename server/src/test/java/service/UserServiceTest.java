@@ -3,10 +3,7 @@ package service;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
-import datamodel.LoginRequest;
-import datamodel.LoginResult;
-import datamodel.RegistrationResult;
-import datamodel.UserData;
+import datamodel.*;
 import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -94,5 +91,18 @@ class UserServiceTest {
         String fakeToken = "utes-r-good-at-football";
         DataAccessException ex = assertThrows(DataAccessException.class, () -> userService.logout(fakeToken));
         assertEquals("Error: Unauthorized", ex.getMessage());
+    }
+
+    @Test
+    void checkAuthSucceed() throws DataAccessException{
+        AuthData auth = dataAccess.createAuth("user");
+        AuthData result = userService.checkAuth(auth.authToken());
+        assertEquals(auth, result);
+    }
+
+    @Test
+    void checkAuthFail() {
+        DataAccessException ex = assertThrows(DataAccessException.class, () -> userService.checkAuth("fakeToken"));
+        assertEquals("Error: unauthorized", ex.getMessage());
     }
 }
