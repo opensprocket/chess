@@ -53,13 +53,13 @@ public class Server {
     private void register(Context ctx) throws DataAccessException {
         UserData user = serializer.fromJson(ctx.body(), UserData.class);
         RegistrationResult result = userService.register(user);
-        ctx.status(200).json(result);
+        ctx.status(200).result(serializer.toJson(result));
     }
 
     private void login(Context ctx) throws DataAccessException {
         LoginRequest req = serializer.fromJson(ctx.body(), LoginRequest.class);
         LoginResult result = userService.login(req);
-        ctx.status(200).json(result);
+        ctx.status(200).result(serializer.toJson(result));
     }
 
     private void logout(Context ctx) throws DataAccessException {
@@ -72,7 +72,7 @@ public class Server {
         String authToken = ctx.header("authorization");
         userService.checkAuth(authToken); // 401 if bad
         ListGameResult result = gameService.listGames();
-        ctx.status(200).json(result);
+        ctx.status(200).result(serializer.toJson(result));
     }
 
     private void createGame(Context ctx) throws DataAccessException {
@@ -80,7 +80,7 @@ public class Server {
         AuthData auth = userService.checkAuth(authToken); // throws 401
         CreateGameRequest req = serializer.fromJson(ctx.body(), CreateGameRequest.class);
         CreateGameResult result = gameService.createGame(req);
-        ctx.status(200).json(result);
+        ctx.status(200).result(serializer.toJson(result));
     }
 
     private void joinGame(Context ctx) throws DataAccessException {
@@ -106,13 +106,12 @@ public class Server {
         } else {
             ctx.status(500);
         }
-        ctx.json(res);
+        ctx.result(serializer.toJson(res));
     }
 
     private void exceptionHandler (Exception ex, Context ctx) {
         ctx.status(500);
-        ctx.json(new ErrorResponse("Error: " + ex.getMessage()));
-        ex.printStackTrace(); // basic debugging
+        ctx.result(serializer.toJson(new ErrorResponse("Error: " + ex.getMessage())));
     }
 
     // server control
