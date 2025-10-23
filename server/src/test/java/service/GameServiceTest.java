@@ -1,10 +1,12 @@
 package service;
 
 import chess.ChessGame;
-import dataaccess.*;
-import org.junit.jupiter.api.*;
-import service.*;
+import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
+import dataaccess.MemoryDataAccess;
 import datamodel.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -109,5 +111,5 @@ public class GameServiceTest {
         DataAccessException ex = assertThrows(DataAccessException.class, () -> gameService.joinGame(joinAsWhiteTwo, "player2"));
         assertEquals("Error: already taken", ex.getMessage());
     }
-    
+
 }
