@@ -46,12 +46,12 @@ public class GameService {
         GameData updatedGame = null;
         if (req.playerColor() == ChessGame.TeamColor.WHITE) {
             if (game.whiteUsername() != null) {
-                throw new DataAccessException("Error: Already taken");
+                throw new DataAccessException("Error: already taken");
             }
             updatedGame = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
         } else if (req.playerColor() == ChessGame.TeamColor.BLACK) {
             if (game.blackUsername() != null) {
-                throw new DataAccessException("Error: Already taken");
+                throw new DataAccessException("Error: already taken");
             }
             updatedGame = new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
         }
