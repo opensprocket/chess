@@ -19,39 +19,8 @@ public class KingMoveGenerator implements MoveCalculator {
 
     @Override
     public Collection<ChessMove> possibleMoves(ChessBoard board, ChessPosition from) {
-        Collection<ChessMove> moves = new ArrayList<>();
-
         ChessPiece piece = board.getPiece(from);
-
-        if (piece == null) {
-            return moves;
-        }
-
-        ChessGame.TeamColor myTeam = piece.getTeamColor();
-
-        for (int[] dir : DIRECTIONS) {
-            int row = from.getRow() + dir[0];
-            int col = from.getColumn() + dir[1];
-
-            if (onTheBoard(row, col)) {
-                ChessPosition to = new ChessPosition(row,col); // move
-
-                ChessPiece target = board.getPiece(to); // destination
-
-                // empty
-                if (target == null) {
-                    moves.add(new ChessMove(from, to, null));
-                } else {
-                    // valid capture target
-                    if (target.getTeamColor() != myTeam) {
-                        moves.add(new ChessMove(from, to, null));
-                    }
-                    // do nothing, friendly piece
-                }
-            }
-        }
-
-        return moves;
+        return OmnidirectionalMoves.generate(board, from, piece.getTeamColor(), DIRECTIONS, 1);
     }
 
     @Override
