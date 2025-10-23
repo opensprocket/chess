@@ -4,11 +4,10 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
 import datamodel.*;
-import org.eclipse.jetty.server.Authentication;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import javax.xml.crypto.Data;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -62,7 +61,7 @@ class UserServiceTest {
     void loginUserNotFound() {
         LoginRequest req = new LoginRequest("skeleton", "key");
         DataAccessException ex = assertThrows(DataAccessException.class, () -> userService.login(req));
-        assertEquals("Error: Unauthorized", ex.getMessage());
+        assertEquals("Error: unauthorized", ex.getMessage());
     }
 
     @Test
@@ -70,7 +69,7 @@ class UserServiceTest {
         userService.register(testUser);
         LoginRequest req = new LoginRequest(testUser.username(), "not-my-password");
         DataAccessException ex = assertThrows(DataAccessException.class, () -> userService.login(req));
-        assertEquals("Error: Unauthorized", ex.getMessage());
+        assertEquals("Error: unauthorized", ex.getMessage());
     }
 
     @Test
@@ -90,7 +89,7 @@ class UserServiceTest {
     void logoutUnauthorized() {
         String fakeToken = "utes-r-good-at-football";
         DataAccessException ex = assertThrows(DataAccessException.class, () -> userService.logout(fakeToken));
-        assertEquals("Error: Unauthorized", ex.getMessage());
+        assertEquals("Error: unauthorized", ex.getMessage());
     }
 
     @Test
