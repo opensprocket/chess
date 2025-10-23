@@ -39,7 +39,7 @@ public class GameService {
 
         // observer
         if (req.playerColor() == null) {
-            return; // no updates if just observing
+            throw new DataAccessException("Error: bad request");
         }
 
         // player
@@ -54,10 +54,13 @@ public class GameService {
                 throw new DataAccessException("Error: already taken");
             }
             updatedGame = new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
+        } else {
+            // only accept white, black or null for colors and reject all others
+            throw new DataAccessException("Error: bad request");
         }
 
         if (updatedGame != null) {
-            dataAccess.updateGame(game.gameID(), updatedGame); // this might be redundant, but leaving it here anyway's
+            dataAccess.updateGame(game.gameID(), updatedGame); // this might be redundant, but leaving it here anyways
         }
 
     }
