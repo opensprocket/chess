@@ -17,16 +17,6 @@ public class MemoryDataAccess implements DataAccess {
 
     private int nextGameID = 1;
 
-//    @Override
-//    public void saveUser(UserData user) {
-//        users.put(user.username(), user);
-//    }
-//
-//    @Override
-//    public void getUser(String username) {
-//        users.get(username);
-//    }
-
     @Override
     public void clear() throws DataAccessException {
         users.clear();
