@@ -9,11 +9,11 @@ final class OmnidirectionalMoves {
     static Collection<ChessMove> generate(ChessBoard board,
                                           ChessPosition from,
                                           ChessGame.TeamColor color,
-                                          int[][] DIRECTIONS,
+                                          int[][] directions,
                                           int maxSteps) {
         Collection<ChessMove> moves = new ArrayList<>();
 
-        for (int[] dir : DIRECTIONS) {
+        for (int[] dir : directions) {
             int row = from.getRow() + dir[0];
             int col = from.getColumn() + dir[1];
             int steps = 0;
