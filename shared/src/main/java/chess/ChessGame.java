@@ -23,7 +23,6 @@ public class ChessGame {
     private boolean blackKingSideRookMoved = false;
     private boolean blackQueenSideRookMoved = false;
 
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
@@ -97,7 +96,6 @@ public class ChessGame {
         }
 
         // end castling logic
-
         for (ChessMove move : potentialMoves) {
             if (!moveMakesKingVulnerable(move, playerColor)) {
                 validMoves.add(move);
@@ -216,7 +214,6 @@ public class ChessGame {
                 throw new InvalidMoveException("Move is not allowed or leaves King in check.");
             }
         }
-
         // move piece
         board.movePiece(move);
 
@@ -236,7 +233,6 @@ public class ChessGame {
                 }
             }
         }
-
 
         // en passant state tracking
         ChessPosition pawnStart = move.getStartPosition();
@@ -282,7 +278,6 @@ public class ChessGame {
                 }
             }
         }
-
         // change turn
         currentTurn = (currentTurn == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
     }
