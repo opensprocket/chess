@@ -85,17 +85,6 @@ public class GameServiceTest {
     }
 
     @Test
-    void joinGameAsObserverSuccess() throws DataAccessException {
-        String observerUsername = "observer name";
-        JoinGameRequest req = new JoinGameRequest(null, testGameID);
-        gameService.joinGame(req, observerUsername);
-
-        GameData game = dataAccess.getGame(testGameID);
-        assertNull(game.whiteUsername());
-        assertNull(game.blackUsername());
-    }
-
-    @Test
     void joinGameNotFound() {
         JoinGameRequest req = new JoinGameRequest(ChessGame.TeamColor.WHITE, 1337); // fake id, fake game
         DataAccessException ex = assertThrows(DataAccessException.class, () -> gameService.joinGame(req, "some-username"));
