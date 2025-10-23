@@ -14,11 +14,11 @@ import javax.xml.crypto.Data;
 public class Server {
 
     private final Javalin server;
-    private DataAccess dataAccess;
-    private UserService userService;
-    private GameService gameService;
-    private ClearService clearService;
-    private Gson serializer = new Gson();
+    private final DataAccess dataAccess;
+    private final UserService userService;
+    private final GameService gameService;
+    private final ClearService clearService;
+    private final Gson serializer = new Gson();
 
 
     public Server() {
