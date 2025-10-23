@@ -118,19 +118,28 @@ public class ChessGame {
                 ChessPosition currentPos = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(currentPos);
 
-                // check enemy piece moves
-                if (piece != null && piece.getTeamColor() == teamColor) {
-                    Collection<ChessMove> moves = piece.pieceMoves(board, currentPos);
-
-                    for (ChessMove move : moves) {
-                        if (move.getEndPosition().equals(position)) {
-                            return true; // square under attack
-                        }
-                    }
+                if (!isEnemy(piece, teamColor)) {
+                    continue;
+                }
+                if (attacksSquare(piece, currentPos, position)) {
+                    return true;
                 }
             }
         }
         return false; // safe square
+    }
+
+    private boolean isEnemy(ChessPiece piece, TeamColor team) {
+        return piece != null && piece.getTeamColor() == team;
+    }
+
+    private boolean attacksSquare(ChessPiece piece, ChessPosition from, ChessPosition target) {
+        for (ChessMove move : piece.pieceMoves(board, from)) {
+            if (move.getEndPosition().equals(target)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
