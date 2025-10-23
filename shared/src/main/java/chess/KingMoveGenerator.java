@@ -6,7 +6,7 @@ import java.util.List;
 
 public class KingMoveGenerator implements MoveCalculator {
 
-    private static final int[][] DIRECTIONS = {
+    private static final int[][] directions = {
             {1,0}, // up
             {-1,0}, // down
             {0,1}, // right
@@ -20,7 +20,7 @@ public class KingMoveGenerator implements MoveCalculator {
     @Override
     public Collection<ChessMove> possibleMoves(ChessBoard board, ChessPosition from) {
         ChessPiece piece = board.getPiece(from);
-        return OmnidirectionalMoves.generate(board, from, piece.getTeamColor(), DIRECTIONS, 1);
+        return OmnidirectionalMoves.generate(board, from, piece.getTeamColor(), directions, 1);
     }
 
     @Override
