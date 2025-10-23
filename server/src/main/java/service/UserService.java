@@ -20,7 +20,7 @@ public class UserService {
         }
 
         if (dataAccess.getUser(user.username()) != null) {
-            throw new DataAccessException(String.format("Error: %s already taken", user.username()));
+            throw new DataAccessException("Error: already taken");
         }
 
         dataAccess.createUser(user);
@@ -32,7 +32,7 @@ public class UserService {
         UserData user = dataAccess.getUser(req.username());
 
         if (user == null || !user.password().equals(req.password())) {
-            throw new DataAccessException("Error: Unauthorized");
+            throw new DataAccessException("Error: unauthorized");
         }
 
         AuthData authData = dataAccess.createAuth(user.username());
@@ -41,7 +41,7 @@ public class UserService {
 
     public void logout(String authToken) throws DataAccessException {
         if (dataAccess.getAuth(authToken) == null) {
-            throw new DataAccessException("Error: Unauthorized");
+            throw new DataAccessException("Error: unauthorized");
         }
         dataAccess.deleteAuth(authToken);
     }
@@ -49,7 +49,7 @@ public class UserService {
     public AuthData checkAuth(String authToken) throws DataAccessException {
         AuthData auth = dataAccess.getAuth(authToken);
         if (auth == null) {
-            throw new DataAccessException("Error: Unauthorized");
+            throw new DataAccessException("Error: unauthorized");
         }
         return auth;
     }
