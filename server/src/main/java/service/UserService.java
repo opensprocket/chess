@@ -29,6 +29,10 @@ public class UserService {
     }
 
     public LoginResult login(LoginRequest req) throws DataAccessException {
+        if (req.username() == null || req.password() == null) {
+            throw new DataAccessException("Error: bad request");
+        }
+
         UserData user = dataAccess.getUser(req.username());
 
         if (user == null || !user.password().equals(req.password())) {
