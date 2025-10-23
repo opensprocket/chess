@@ -109,8 +109,5 @@ public class GameServiceTest {
         DataAccessException ex = assertThrows(DataAccessException.class, () -> gameService.joinGame(joinAsWhiteTwo, "player2"));
         assertEquals("Error: already taken", ex.getMessage());
     }
-
-
-
-
+    
 }

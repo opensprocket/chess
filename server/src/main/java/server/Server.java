@@ -95,6 +95,7 @@ public class Server {
     private void dataAccessExceptionHandler(DataAccessException ex, Context ctx) {
         ErrorResponse res = new ErrorResponse(ex.getMessage());
         String message = ex.getMessage().toLowerCase();
+
         // parse message content and assign appropriate HTTP error code
         if (message.contains("bad request")) {
             ctx.status(400);
