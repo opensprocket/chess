@@ -1,7 +1,13 @@
 package dataaccess;
 
+import chess.ChessGame;
 import datamodel.*;
 import org.junit.jupiter.api.*;
+
+import javax.xml.crypto.Data;
+
+import java.util.Collection;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DataAccessTest {
@@ -15,7 +21,7 @@ public class DataAccessTest {
         testUser = new UserData("player1", "pass123", "player1@email.com");
     }
 
-    // clear
+//  clear
     @Test
     void clearSuccess() throws DataAccessException {
         da.createUser(testUser);
@@ -30,7 +36,7 @@ public class DataAccessTest {
         assertNull(da.getUser(testUser.username()));
         assertTrue(da.listGames().isEmpty());
     }
-//      user creation
+//  user creation
     @Test
     void createUserSuccess() {
         da.createUser(testUser);
@@ -62,7 +68,7 @@ public class DataAccessTest {
         UserData retrievedUser = da.getUser("non-existent user");
         assertNull(retrievedUser);
     }
-//    auth
+//  auth
     @Test
     void createAuthSuccess() throws DataAccessException {
         AuthData auth = da.createAuth(testUser.username());
@@ -90,7 +96,64 @@ public class DataAccessTest {
 
     @Test
     void deleteAuthSuccess() throws DataAccessException {
-        
+        AuthData auth = da.createAuth(testUser.username());
+        assertNotNull(da.getAuth(auth.authToken()));
+
+        da.deleteAuth(auth.authToken());
+
+        assertNull(da.getAuth(auth.authToken()));
     }
 
+    @Test
+    void deleteAuthFail() {
+        assertDoesNotThrow(() -> da.deleteAuth("fake data"));
+    }
+
+//  game
+    @Test
+    void createGameSuccess() throws DataAccessException {
+        int gameID = da.createGame("My Game");
+        assertTrue(gameID > 0);
+
+        GameData game = da.getGame(gameID);
+        assertNotNull(game);
+        assertEquals(gameID, game.gameID());
+        assertEquals("My Game", game.gameName());
+        assertNull(game.whiteUsername());
+        assertNull(game.blackUsername());
+        assertNotNull(game.game());
+        assertEquals(ChessGame.TeamColor.WHITE, game.game().getTeamTurn());
+    }
+
+    @Test
+    void getGameSuccess() throws DataAccessException {
+        int id = da.createGame("My Game");
+        GameData game = da.getGame(id);
+        assertNotNull(game);
+        assertEquals(id, game.gameID());
+    }
+
+    @Test
+    void getGameFail() throws DataAccessException {
+        GameData game = da.getGame(1337);
+        assertNull(game);
+    }
+
+    @Test
+    void listGamesSuccess() throws DataAccessException {
+        int g1 = da.createGame("game1");
+        int g2 = da.createGame("game2");
+
+        Collection<GameData> games = da.listGames();
+        assertEquals(2, games.size());
+        assertTrue(games.stream().anyMatch(g -> g.gameID() == g1));
+        assertTrue(games.stream().anyMatch(g -> g.gameID() == g2));
+    }
+
+    @Test
+    void listGamesSuccessEmpty() throws DataAccessException {
+        Collection<GameData> games = da.listGames();
+        assertNotNull(games);
+        assertTrue(games.isEmpty());
+    }
 }
