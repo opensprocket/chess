@@ -6,47 +6,91 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DataAccessTest {
 
-    private DataAccess dataAccess;
+    private DataAccess da;
     private UserData testUser;
 
     @BeforeEach
     void setUp() {
-        dataAccess = new MemoryDataAccess();
+        da = new MemoryDataAccess();
         testUser = new UserData("player1", "pass123", "player1@email.com");
     }
 
     // clear
     @Test
     void clearSuccess() throws DataAccessException {
-        dataAccess.createUser(testUser);
-        dataAccess.createAuth(testUser.username());
-        dataAccess.createGame("test game");
+        da.createUser(testUser);
+        da.createAuth(testUser.username());
+        da.createGame("test game");
 
-        assertNotNull(dataAccess.getUser(testUser.username()));
-        assertFalse(dataAccess.listGames().isEmpty());
+        assertNotNull(da.getUser(testUser.username()));
+        assertFalse(da.listGames().isEmpty());
 
-        dataAccess.clear();
+        da.clear();
 
-        assertNull(dataAccess.getUser(testUser.username()));
-        assertTrue(dataAccess.listGames().isEmpty());
+        assertNull(da.getUser(testUser.username()));
+        assertTrue(da.listGames().isEmpty());
     }
-
+//      user creation
     @Test
     void createUserSuccess() {
-        dataAccess.createUser(testUser);
-        UserData retrievedUser = dataAccess.getUser(testUser.username());
+        da.createUser(testUser);
+        UserData retrievedUser = da.getUser(testUser.username());
         assertEquals(testUser, retrievedUser);
     }
 
     @Test
     void createUserDuplicateFail() {
-        dataAccess.createUser(testUser);
+        da.createUser(testUser);
         UserData updatedUser = new UserData("player1", "hunter2", "notplayer1@email.com");
-        dataAccess.createUser(updatedUser);
+        da.createUser(updatedUser);
 
-        UserData retrievedUser = dataAccess.getUser("player1");
+        UserData retrievedUser = da.getUser("player1");
         assertEquals(updatedUser, retrievedUser);
         assertEquals("hunter2", retrievedUser.password());
+    }
+
+    @Test
+    void getUserSuccess() throws DataAccessException {
+        da.createUser(testUser);
+        UserData retrievedUser = da.getUser("player1");
+        assertNotNull(retrievedUser);
+        assertEquals(testUser, retrievedUser);
+    }
+
+    @Test
+    void getUserNotFound() throws DataAccessException {
+        UserData retrievedUser = da.getUser("non-existent user");
+        assertNull(retrievedUser);
+    }
+//    auth
+    @Test
+    void createAuthSuccess() throws DataAccessException {
+        AuthData auth = da.createAuth(testUser.username());
+        assertNotNull(auth);
+        assertNotNull(auth.authToken());
+        assertEquals(testUser.username(), auth.username());
+
+        // pull from storage
+        AuthData res = da.getAuth(auth.authToken());
+        assertEquals(auth, res);
+    }
+
+    @Test
+    void getAuthSuccess() throws DataAccessException {
+        AuthData auth = da.createAuth(testUser.username());
+        AuthData res = da.getAuth(auth.authToken());
+        assertEquals(auth, res);
+    }
+
+    @Test
+    void authNotFound() throws DataAccessException {
+        AuthData auth = da.getAuth("fakedata");
+        assertNull(auth);
+    }
+
+    @Test
+    void deleteAuthSuccess() throws DataAccessException {
+        
     }
 
 }
