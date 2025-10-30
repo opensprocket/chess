@@ -156,4 +156,38 @@ public class DataAccessTest {
         assertNotNull(games);
         assertTrue(games.isEmpty());
     }
+
+    @Test
+    void updateGameSuccess() throws DataAccessException {
+        int g1 = da.createGame("game1");
+        GameData originalGame = da.getGame(g1);
+
+        // update game
+        GameData updatedGame = new GameData(
+                originalGame.gameID(),
+                "whitePlayer",
+                originalGame.blackUsername(),
+                originalGame.gameName(),
+                originalGame.game()
+        );
+
+        da.updateGame(g1, updatedGame);
+
+        GameData res = da.getGame(g1);
+        assertEquals(updatedGame, res);
+        assertEquals("whitePlayer", res.whiteUsername());
+    }
+
+    @Test
+    void updateGameFail() throws DataAccessException {
+        int fake = 1337;
+        GameData newGame = new GameData(fake, null, null, "newgame", new ChessGame());
+
+        da.updateGame(fake, newGame);
+
+        GameData res = da.getGame(fake);
+        assertNotNull(res);
+        assertEquals(newGame, res);
+    }
+
 }
