@@ -4,8 +4,6 @@ import chess.ChessGame;
 import datamodel.*;
 import org.junit.jupiter.api.*;
 
-import javax.xml.crypto.Data;
-
 import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.*;
