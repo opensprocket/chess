@@ -7,6 +7,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -225,7 +226,29 @@ public class MySQLDataAccess implements DataAccess {
 
     @Override
     public Collection<GameData> listGames() throws DataAccessException {
-        return List.of();
+        var games = new ArrayList<GameData>();
+        String statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM game";
+
+        try (var conn = DatabaseManager.getConnection()) {
+            var ps = conn.prepareStatement(statement);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String gameJson = rs.getString("game");
+                    ChessGame game = serializer.fromJson(gameJson, ChessGame.class);
+                    games.add( new GameData(
+                            rs.getInt("gameID"),
+                            rs.getString("whiteUsername"),
+                            rs.getString("blackUsername"),
+                            rs.getString("gameName"),
+                            game
+                    ));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException("Failed to list games", ex);
+        }
+        return games;
     }
 
     @Override
