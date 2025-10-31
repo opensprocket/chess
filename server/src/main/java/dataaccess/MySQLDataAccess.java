@@ -28,27 +28,27 @@ public class MySQLDataAccess implements DataAccess {
         try(var conn = DatabaseManager.getConnection()) {
             String[] createStatements = {
                     """
-                    CREATE TABLE IF NOT EXISTS user {
+                    CREATE TABLE IF NOT EXISTS user (
                         username VARCHAR(128) NOT NULL PRIMARY KEY,
                         password VARCHAR(128) NOT NULL,
                         email VARCHAR(255) NOT NULL
-                    }
+                    )
                     """,
                     """
-                    CREATE TABLE IF NOT EXISTS auth {
+                    CREATE TABLE IF NOT EXISTS auth (
                         authToken VARCHAR(255) NOT NULL PRIMARY KEY,
                         username VARCHAR(128) NOT NULL,
                         INDEX(username)
-                    }
+                    )
                     """,
                     """
-                    CREATE TABLE IF NOT EXISTS game {
+                    CREATE TABLE IF NOT EXISTS game (
                         gameID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                         whiteUsername VARCHAR(128) NULL,
                         blackUsername VARCHAR(128) NULL,
                         gameName VARCHAR(128) NOT NULL,
                         game TEXT NOT NULL
-                    }
+                    )
                     """
             };
 
