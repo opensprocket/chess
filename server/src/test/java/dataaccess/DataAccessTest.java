@@ -36,14 +36,14 @@ public class DataAccessTest {
     }
 //  user creation
     @Test
-    void createUserSuccess() {
+    void createUserSuccess() throws DataAccessException {
         da.createUser(testUser);
         UserData retrievedUser = da.getUser(testUser.username());
         assertEquals(testUser, retrievedUser);
     }
 
     @Test
-    void createUserDuplicateFail() {
+    void createUserDuplicateFail() throws DataAccessException {
         da.createUser(testUser);
         UserData updatedUser = new UserData("player1", "hunter2", "notplayer1@email.com");
         da.createUser(updatedUser);
