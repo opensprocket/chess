@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import datamodel.*;
 import org.mindrot.jbcrypt.BCrypt;
@@ -198,7 +199,28 @@ public class MySQLDataAccess implements DataAccess {
 
     @Override
     public GameData getGame(int gameID) throws DataAccessException {
-        return null;
+        String statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM game WHERE gameID = ?";
+        try (var conn = DatabaseManager.getConnection()) {
+            var ps = conn.prepareStatement(statement);
+
+            ps.setInt(1, gameID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String gameJson = rs.getString("game");
+                    ChessGame game = serializer.fromJson(gameJson, ChessGame.class);
+                    return new GameData(
+                            rs.getInt("gameID"),
+                            rs.getString("whiteUsername"),
+                            rs.getString("blackUsername"),
+                            rs.getString("gameName"),
+                            game
+                    );
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException("Failed to get game", ex);
+        }
+        return null; // not found
     }
 
     @Override
