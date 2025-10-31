@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 
@@ -182,10 +181,11 @@ public class MySQLDataAccess implements DataAccess {
 
         String statement = "INSERT INTO game (gameName, game) VALUES (?, ?)";
         try (var conn = DatabaseManager.getConnection()) {
-            var ps = conn.prepareStatement(statement);
+            var ps = conn.prepareStatement(statement, java.sql.Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, gameName);
             ps.setString(2, gameJson);
 
+            ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     return rs.getInt(1);
