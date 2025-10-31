@@ -176,7 +176,24 @@ public class MySQLDataAccess implements DataAccess {
 
     @Override
     public int createGame(String gameName) throws DataAccessException {
-        return 0;
+        ChessGame newGame = new ChessGame();
+        String gameJson = serializer.toJson(newGame);
+
+        String statement = "INSERT INTO game (gameName, game) VALUES (?, ?)";
+        try (var conn = DatabaseManager.getConnection()) {
+            var ps = conn.prepareStatement(statement);
+            ps.setString(1, gameName);
+            ps.setString(2, gameJson);
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException("Failed to create game", ex);
+        }
+        throw new DataAccessException("Failed to create game and retrieve ID");
     }
 
     @Override
