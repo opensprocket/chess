@@ -253,6 +253,33 @@ public class MySQLDataAccess implements DataAccess {
 
     @Override
     public void updateGame(int gameID, GameData game) throws DataAccessException {
+        String gameJson = serializer.toJson(game.game());
 
+        String statement = """
+                INSERT INTO game (gameID, whiteUsername, blackUsername, gameName, game)
+                VALUES (?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE
+                whiteUsername = ?, blackUsername = ?, gameName = ?, game = ?
+                """;
+
+        try (var conn = DatabaseManager.getConnection()) {
+            var ps = conn.prepareStatement(statement);
+            ps.setInt(1, gameID);
+            ps.setString(2, game.whiteUsername());
+            ps.setString(3, game.blackUsername());
+            ps.setString(4, game.gameName());
+            ps.setString(5, gameJson);
+
+            // update
+            ps.setString(6, game.whiteUsername());
+            ps.setString(7, game.blackUsername());
+            ps.setString(8, game.gameName());
+            ps.setString(9, gameJson);
+
+            ps.executeUpdate();
+
+        } catch (SQLException ex) {
+            throw new DataAccessException("Failed to update game", ex);
+        }
     }
 }
