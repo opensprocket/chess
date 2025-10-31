@@ -9,7 +9,6 @@ import jakarta.servlet.Registration;
 import org.jetbrains.annotations.NotNull;
 import service.*;
 
-
 public class Server {
 
     private final Javalin server;
@@ -21,8 +20,11 @@ public class Server {
 
 
     public Server() {
-        dataAccess = new MemoryDataAccess();
-
+        try {
+            dataAccess = new MySQLDataAccess();
+        } catch (Throwable ex) {
+            System.out.printf("Unable to start server %s%n", ex.getMessage());
+        }
         this.userService = new UserService(dataAccess);
         this.gameService = new GameService(dataAccess);
         this.clearService = new ClearService(dataAccess);
