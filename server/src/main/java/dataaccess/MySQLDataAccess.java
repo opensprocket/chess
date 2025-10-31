@@ -17,6 +17,31 @@ public class MySQLDataAccess implements DataAccess {
 
     private final Gson serializer = new Gson();
 
+    private final String[] createStatements = {
+            """
+            CREATE TABLE IF NOT EXISTS user (
+                username VARCHAR(128) NOT NULL PRIMARY KEY,
+                password VARCHAR(128) NOT NULL,
+                email VARCHAR(255) NOT NULL
+            )
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS auth (
+                authToken VARCHAR(255) NOT NULL PRIMARY KEY,
+                username VARCHAR(128) NOT NULL,
+                INDEX(username)
+            )
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS game (
+                gameID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                whiteUsername VARCHAR(128) NULL,
+                blackUsername VARCHAR(128) NULL,
+                gameName VARCHAR(128) NOT NULL,
+                game TEXT NOT NULL
+            )
+            """
+    };
 
     public MySQLDataAccess() throws DataAccessException {
         configureDatabase();
@@ -26,33 +51,7 @@ public class MySQLDataAccess implements DataAccess {
         DatabaseManager.createDatabase();
 
         try(var conn = DatabaseManager.getConnection()) {
-            String[] createStatements = {
-                    """
-                    CREATE TABLE IF NOT EXISTS user (
-                        username VARCHAR(128) NOT NULL PRIMARY KEY,
-                        password VARCHAR(128) NOT NULL,
-                        email VARCHAR(255) NOT NULL
-                    )
-                    """,
-                    """
-                    CREATE TABLE IF NOT EXISTS auth (
-                        authToken VARCHAR(255) NOT NULL PRIMARY KEY,
-                        username VARCHAR(128) NOT NULL,
-                        INDEX(username)
-                    )
-                    """,
-                    """
-                    CREATE TABLE IF NOT EXISTS game (
-                        gameID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                        whiteUsername VARCHAR(128) NULL,
-                        blackUsername VARCHAR(128) NULL,
-                        gameName VARCHAR(128) NOT NULL,
-                        game TEXT NOT NULL
-                    )
-                    """
-            };
-
-            for (String statement : createStatements) {
+           for (String statement : createStatements) {
                 try (var ps = conn.prepareStatement(statement)) {
                     ps.executeUpdate();
                 }
