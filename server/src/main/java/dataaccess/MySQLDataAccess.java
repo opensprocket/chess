@@ -79,7 +79,23 @@ public class MySQLDataAccess implements DataAccess {
     }
 
     @Override
-    public UserData getUser(String username) {
+    public UserData getUser(String username) throws DataAccessException {
+        var statement = "SELECT username, password, email FROM user WHERE username = ?";
+        try (var conn = DatabaseManager.getConnection()) {
+            var ps = conn.prepareStatement(statement);
+
+            ps.setString(1, username);
+
+            try (var rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new UserData(rs.getString("username"), rs.getString("password"), rs.getString("email"));
+                }
+            }
+
+        } catch (SQLException ex) {
+            throw new DataAccessException("Failed to get user", ex);
+        }
+        // no record found
         return null;
     }
 
