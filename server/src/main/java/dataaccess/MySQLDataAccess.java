@@ -74,8 +74,26 @@ public class MySQLDataAccess implements DataAccess {
     }
 
     @Override
-    public void createUser(UserData user) {
+    public void createUser(UserData user) throws DataAccessException {
+        String hashedPass = BCrypt.hashpw(user.password(), BCrypt.gensalt());
 
+        String statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE password = ?, email = ?";
+
+        try (var conn = DatabaseManager.getConnection()) {
+            var ps = conn.prepareStatement(statement);
+
+            ps.setString(1, user.username());
+            ps.setString(2, hashedPass);
+            ps.setString(3, user.email());
+            // on user update
+            ps.setString(4, hashedPass);
+            ps.setString(5, user.email());
+
+            ps.executeUpdate();
+
+        } catch (SQLException ex) {
+            throw new DataAccessException("Failed to create user", ex);
+        }
     }
 
     @Override
