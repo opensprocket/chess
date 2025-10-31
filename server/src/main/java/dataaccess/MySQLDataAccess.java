@@ -4,9 +4,11 @@ import com.google.gson.Gson;
 import datamodel.*;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 
 public class MySQLDataAccess implements DataAccess {
@@ -119,7 +121,22 @@ public class MySQLDataAccess implements DataAccess {
 
     @Override
     public AuthData createAuth(String username) throws DataAccessException {
-        return null;
+        String authToken = UUID.randomUUID().toString();
+        var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
+
+        try (var conn = DatabaseManager.getConnection()) {
+            var ps = conn.prepareStatement(statement);
+
+            ps.setString(1, authToken);
+            ps.setString(2, username);
+
+            ps.executeUpdate();
+
+            return new AuthData(authToken, username);
+
+        } catch (SQLException ex) {
+            throw new DataAccessException("Failed to create auth", ex);
+        }
     }
 
     @Override
