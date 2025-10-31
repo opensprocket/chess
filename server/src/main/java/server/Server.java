@@ -9,12 +9,11 @@ import jakarta.servlet.Registration;
 import org.jetbrains.annotations.NotNull;
 import service.*;
 
-import javax.xml.crypto.Data;
 
 public class Server {
 
     private final Javalin server;
-    private final DataAccess dataAccess;
+    private DataAccess dataAccess;
     private final UserService userService;
     private final GameService gameService;
     private final ClearService clearService;
