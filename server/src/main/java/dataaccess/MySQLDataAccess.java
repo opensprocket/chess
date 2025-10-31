@@ -2,6 +2,7 @@ package dataaccess;
 
 import com.google.gson.Gson;
 import datamodel.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLException;
 import java.util.Collection;
@@ -48,8 +49,8 @@ public class MySQLDataAccess implements DataAccess {
             };
 
             for (String statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
+                try (var ps = conn.prepareStatement(statement)) {
+                    ps.executeUpdate();
                 }
             }
 
