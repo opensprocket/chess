@@ -23,7 +23,7 @@ public class Server {
         try {
             dataAccess = new MySQLDataAccess();
         } catch (Throwable ex) {
-            System.out.printf("Unable to start server %s%n", ex.getMessage());
+            System.out.printf("Error: Unable to start server %s%n", ex.getMessage());
         }
         this.userService = new UserService(dataAccess);
         this.gameService = new GameService(dataAccess);
