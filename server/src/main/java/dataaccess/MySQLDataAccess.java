@@ -57,7 +57,7 @@ public class MySQLDataAccess implements DataAccess {
             }
 
         } catch (SQLException ex) {
-            throw new DataAccessException("Unable to configure database", ex);
+            throw new DataAccessException("Error: Unable to configure database", ex);
         }
     }
 
@@ -71,7 +71,7 @@ public class MySQLDataAccess implements DataAccess {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Failed to clear database", ex);
+            throw new DataAccessException("Error: Failed to clear database", ex);
         }
     }
 
@@ -94,7 +94,7 @@ public class MySQLDataAccess implements DataAccess {
             ps.executeUpdate();
 
         } catch (SQLException ex) {
-            throw new DataAccessException("Failed to create user", ex);
+            throw new DataAccessException("Error: Failed to create user", ex);
         }
     }
 
@@ -113,7 +113,7 @@ public class MySQLDataAccess implements DataAccess {
             }
 
         } catch (SQLException ex) {
-            throw new DataAccessException("Failed to get user", ex);
+            throw new DataAccessException("Error: Failed to get user", ex);
         }
         // no record found
         return null;
@@ -135,7 +135,7 @@ public class MySQLDataAccess implements DataAccess {
             return new AuthData(authToken, username);
 
         } catch (SQLException ex) {
-            throw new DataAccessException("Failed to create auth", ex);
+            throw new DataAccessException("Error: Failed to create auth", ex);
         }
     }
 
@@ -155,7 +155,7 @@ public class MySQLDataAccess implements DataAccess {
             }
 
         } catch (SQLException ex) {
-            throw new DataAccessException("Failed to get auth", ex);
+            throw new DataAccessException("Error: Failed to get auth", ex);
         }
         return null; // not found
     }
@@ -170,7 +170,7 @@ public class MySQLDataAccess implements DataAccess {
             ps.executeUpdate();
 
         } catch (SQLException ex) {
-            throw new DataAccessException("Failed to delete auth", ex);
+            throw new DataAccessException("Error: Failed to delete auth", ex);
         }
     }
 
@@ -192,9 +192,9 @@ public class MySQLDataAccess implements DataAccess {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Failed to create game", ex);
+            throw new DataAccessException("Error: Failed to create game", ex);
         }
-        throw new DataAccessException("Failed to create game and retrieve ID");
+        throw new DataAccessException("Error: Failed to create game and retrieve ID");
     }
 
     @Override
@@ -218,7 +218,7 @@ public class MySQLDataAccess implements DataAccess {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Failed to get game", ex);
+            throw new DataAccessException("Error: Failed to get game", ex);
         }
         return null; // not found
     }
@@ -245,7 +245,7 @@ public class MySQLDataAccess implements DataAccess {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Failed to list games", ex);
+            throw new DataAccessException("Error: Failed to list games", ex);
         }
         return games;
     }
@@ -278,7 +278,7 @@ public class MySQLDataAccess implements DataAccess {
             ps.executeUpdate();
 
         } catch (SQLException ex) {
-            throw new DataAccessException("Failed to update game", ex);
+            throw new DataAccessException("Error: Failed to update game", ex);
         }
     }
 }
