@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 
 public class MySQLDataAccess implements DataAccess {
@@ -61,6 +62,19 @@ public class MySQLDataAccess implements DataAccess {
         }
     }
 
+    private static final Pattern BCRYPT_REGEX = Pattern.compile("^\\$2[aby]\\$\\d{2}\\$[./A-Za-z0-9]{53}$");
+
+    private boolean isBCryptHash(String input) {
+        return input != null && BCRYPT_REGEX.matcher(input).matches();
+    }
+
+    private String hashIfNeeded(String input) {
+        if (input == null) {
+            return null;
+        }
+        return isBCryptHash(input) ? input : BCrypt.hashpw(input, BCrypt.gensalt());
+    }
+
     @Override
     public void clear() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
@@ -77,8 +91,7 @@ public class MySQLDataAccess implements DataAccess {
 
     @Override
     public void createUser(UserData user) throws DataAccessException {
-        String hashedPass = BCrypt.hashpw(user.password(), BCrypt.gensalt());
-
+        String hashedPass = hashIfNeeded(user.password());
         String statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE password = ?, email = ?";
 
         try (var conn = DatabaseManager.getConnection()) {
