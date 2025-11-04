@@ -14,7 +14,7 @@ public class DataAccessTest {
     private UserData testUser;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws DataAccessException {
         da = new MemoryDataAccess();
         testUser = new UserData("player1", "pass123", "player1@email.com");
     }
@@ -80,6 +80,14 @@ public class DataAccessTest {
     }
 
     @Test
+    void createAuthFail() throws DataAccessException {
+        String uname = null;
+        assertThrows(DataAccessException.class, () -> {
+            da.createAuth(uname);
+        });
+    }
+
+    @Test
     void getAuthSuccess() throws DataAccessException {
         AuthData auth = da.createAuth(testUser.username());
         AuthData res = da.getAuth(auth.authToken());
@@ -121,6 +129,18 @@ public class DataAccessTest {
         assertNull(game.blackUsername());
         assertNotNull(game.game());
         assertEquals(ChessGame.TeamColor.WHITE, game.game().getTeamTurn());
+    }
+
+    @Test
+    void createGameFail() throws DataAccessException {
+        String gameName = null;
+        assertThrows(DataAccessException.class, () -> {
+            da.createGame(gameName);
+        });
+        assertDoesNotThrow(() -> {
+            Collection<GameData> games = da.listGames();
+            assertTrue(games.stream().noneMatch(g -> g.gameName().equals(gameName)));
+        });
     }
 
     @Test
