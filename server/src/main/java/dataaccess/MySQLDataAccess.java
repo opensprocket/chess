@@ -134,6 +134,10 @@ public class MySQLDataAccess implements DataAccess {
 
     @Override
     public AuthData createAuth(String username) throws DataAccessException {
+        if (username == null || username.isEmpty()) {
+            throw new DataAccessException("Error: username cannot be null");
+        }
+
         String authToken = UUID.randomUUID().toString();
         var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
 
@@ -189,6 +193,11 @@ public class MySQLDataAccess implements DataAccess {
 
     @Override
     public int createGame(String gameName) throws DataAccessException {
+
+        if (gameName == null || gameName.isEmpty()) {
+            throw new DataAccessException("Error: Game name cannot be null");
+        }
+
         ChessGame newGame = new ChessGame();
         String gameJson = serializer.toJson(newGame);
 
