@@ -36,6 +36,10 @@ public class MemoryDataAccess implements DataAccess {
 
     @Override
     public AuthData createAuth(String username) throws DataAccessException {
+        if (username == null || username.isEmpty()) {
+            throw new DataAccessException("Error: Cannot be empty");
+        }
+
         String authToken = UUID.randomUUID().toString();
         AuthData auth = new AuthData(authToken, username);
         authTokens.put(authToken, auth);
@@ -54,6 +58,9 @@ public class MemoryDataAccess implements DataAccess {
 
     @Override
     public int createGame(String gameName) throws DataAccessException {
+        if (gameName == null || gameName.isEmpty()) {
+            throw new DataAccessException("Error: Game name cannot be empty");
+        }
         int gameID = nextGameID++;
         ChessGame newGame = new ChessGame();
         newGame.getBoard().resetBoard();
