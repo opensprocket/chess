@@ -2,6 +2,9 @@ package client;
 
 import java.util.Arrays;
 
+import chess.ChessBoard;
+import chess.ChessGame;
+
 public class ChessClient {
 
     private final String serverUrl;
@@ -28,9 +31,15 @@ public class ChessClient {
             case "list" -> listGames();
             case "join" -> joinGame(params);
             case "observe" -> joinAsObserver(params);
+            case "testprint" -> testPrint();
             case "quit" -> "quit";
             default -> help();
         };
+    }
+
+    private String testPrint() {
+        DisplayGameboard.testBoard();
+        return "Test complete";
     }
 
     private String login(String[] params) {
@@ -75,8 +84,21 @@ public class ChessClient {
     private String joinGame(String[] params) {
         assertSignedIn();
 
-        // call out to server
+        // call out to server for game_id
         if (params.length == 2) {
+
+//            if (!params[1].equalsIgnoreCase("WHITE") || !params[1].equalsIgnoreCase("BLACK")) {
+//                return "Error: Invalid color, must be WHITE or BLACK";
+//            }
+
+            ChessGame.TeamColor perspective = (params[1].equalsIgnoreCase("WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+
+            // TODO: call server facade and join game
+
+            ChessBoard board = new ChessBoard();
+            board.resetBoard();
+            DisplayGameboard.drawBoard(board, perspective);
+
             return String.format("Joined game %s as %s", params[0], params[1]);
         }
         return "Expected <game number> [WHITE|BLACK]";
@@ -85,7 +107,14 @@ public class ChessClient {
     private String joinAsObserver(String[] params) {
         assertSignedIn();
         if (params.length == 1) {
-            // call out to server
+            // call out to server for game_id
+
+            // TODO: call server facade and join game from white perspective
+
+            ChessBoard board = new ChessBoard();
+            board.resetBoard();
+            DisplayGameboard.drawBoard(board, ChessGame.TeamColor.WHITE);
+
             return String.format("Observing game %s", params[0]);
         }
         return "Expected: <game number>";
