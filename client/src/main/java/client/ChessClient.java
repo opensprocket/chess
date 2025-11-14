@@ -36,6 +36,7 @@ public class ChessClient {
     private String help() {
         if (state == State.SIGNED_OUT) {
             return """
+                    Commands available:
                     - register <username> <password <email>
                     - login <username> <password>
                     - quit
@@ -43,6 +44,7 @@ public class ChessClient {
                    """;
         } else {
             return """
+                    Commands available:
                     - create <name>
                     - list
                     - join <game number> [WHITE|BLACK]
