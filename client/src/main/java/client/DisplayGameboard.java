@@ -31,22 +31,22 @@ public class DisplayGameboard {
     }
 
     private static void drawWhitePerspective(PrintStream out, ChessBoard board) {
-        String[] headers = {"a", "b", "c", "d", "e", "f", "g", "h"};
+        String[] headers = {"A", "B", "C", "D", "D", "F", "G", "H"};
         drawHeader(out, headers);
 
         for (int row = 8; row >= 1; row--) {
-            drawRow(out, board, row, headers, true);
+            drawRow(out, board, row, true);
         }
 
         drawHeader(out, headers);
     }
 
     private static void drawBlackPerspective(PrintStream out, ChessBoard board) {
-        String[] headers = {"h", "g", "f", "e", "d", "c", "b", "a"};
+        String[] headers = {"H", "G", "F", "E", "D", "C", "B", "A"};
         drawHeader(out, headers);
 
         for (int row = 1; row <= 8; row++) {
-            drawRow(out, board, row, headers, false);
+            drawRow(out, board, row, false);
         }
 
         drawHeader(out, headers);
@@ -54,18 +54,21 @@ public class DisplayGameboard {
 
     private static void drawHeader(PrintStream out, String[] headers) {
         out.print(HEADER_BG_COLOR);
-        out.print(HEADER_TEXT_COLOR);
 
-        out.print(EscapeSequences.EMPTY);
+//        out.print(EscapeSequences.EMPTY);
+        out.print(EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY + " X ");
+
+        out.print(HEADER_TEXT_COLOR);
         for (String header : headers) {
             out.print(" " + header + " ");
         }
 
-        out.print(EscapeSequences.EMPTY);
+//        out.print(EscapeSequences.EMPTY);
+        out.print(EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY + " X ");
         out.println(EscapeSequences.RESET_ALL);
     }
 
-    private static void drawRow(PrintStream out, ChessBoard board, int row, String[] colHeaders, boolean printAsWhitePerspective) {
+    private static void drawRow(PrintStream out, ChessBoard board, int row, boolean printAsWhitePerspective) {
         drawRowNumber(out, row);
 
         for (int col = 1; col <= 8 ; col++) {
@@ -92,23 +95,35 @@ public class DisplayGameboard {
     private static void printSquare(PrintStream out, ChessPiece piece, String bgColor) {
         out.print(bgColor);
         if (piece == null) {
-            out.print(EscapeSequences.EMPTY);
+//            out.print(EscapeSequences.EMPTY);
+            out.print("   ");
         } else {
             String pieceColor = (piece.getTeamColor() == ChessGame.TeamColor.WHITE) ? PIECE_COLOR_WHITE : PIECE_COLOR_BLACK;
             out.print(pieceColor);
-            out.print(getPieceSymbol(piece));
+            out.print(getPieceSymbol(piece, false));
         }
     }
 
-    private static String getPieceSymbol(ChessPiece piece) {
-        return switch (piece.getPieceType()) {
-            case KING -> (piece.getTeamColor() == ChessGame.TeamColor.WHITE) ? EscapeSequences.WHITE_KING : EscapeSequences.BLACK_KING;
-            case QUEEN -> (piece.getTeamColor() == ChessGame.TeamColor.WHITE) ? EscapeSequences.WHITE_QUEEN : EscapeSequences.BLACK_QUEEN;
-            case BISHOP -> (piece.getTeamColor() == ChessGame.TeamColor.WHITE) ? EscapeSequences.WHITE_BISHOP : EscapeSequences.BLACK_BISHOP;
-            case KNIGHT -> (piece.getTeamColor() == ChessGame.TeamColor.WHITE) ? EscapeSequences.WHITE_KNIGHT : EscapeSequences.BLACK_KNIGHT;
-            case ROOK -> (piece.getTeamColor() == ChessGame.TeamColor.WHITE) ? EscapeSequences.WHITE_ROOK : EscapeSequences.BLACK_ROOK;
-            case PAWN -> (piece.getTeamColor() == ChessGame.TeamColor.WHITE) ? EscapeSequences.WHITE_PAWN : EscapeSequences.BLACK_PAWN;
-        };
+    private static String getPieceSymbol(ChessPiece piece, boolean prettyPieces) {
+        if (!prettyPieces) {
+            return switch (piece.getPieceType()) {
+                case KING -> EscapeSequences.SET_TEXT_BOLD + " K ";
+                case QUEEN -> EscapeSequences.SET_TEXT_BOLD + " Q ";
+                case BISHOP -> EscapeSequences.SET_TEXT_BOLD + " B ";
+                case KNIGHT -> EscapeSequences.SET_TEXT_BOLD + " N ";
+                case ROOK -> EscapeSequences.SET_TEXT_BOLD + " R ";
+                case PAWN -> EscapeSequences.SET_TEXT_BOLD + " P ";
+            };
+        } else {
+            return switch (piece.getPieceType()) {
+                case KING -> (piece.getTeamColor() == ChessGame.TeamColor.WHITE) ? EscapeSequences.WHITE_KING : EscapeSequences.BLACK_KING;
+                case QUEEN -> (piece.getTeamColor() == ChessGame.TeamColor.WHITE) ? EscapeSequences.WHITE_QUEEN : EscapeSequences.BLACK_QUEEN;
+                case BISHOP -> (piece.getTeamColor() == ChessGame.TeamColor.WHITE) ? EscapeSequences.WHITE_BISHOP : EscapeSequences.BLACK_BISHOP;
+                case KNIGHT -> (piece.getTeamColor() == ChessGame.TeamColor.WHITE) ? EscapeSequences.WHITE_KNIGHT : EscapeSequences.BLACK_KNIGHT;
+                case ROOK -> (piece.getTeamColor() == ChessGame.TeamColor.WHITE) ? EscapeSequences.WHITE_ROOK : EscapeSequences.BLACK_ROOK;
+                case PAWN -> (piece.getTeamColor() == ChessGame.TeamColor.WHITE) ? EscapeSequences.WHITE_PAWN : EscapeSequences.BLACK_PAWN;
+            };
+        }
     }
 
     public static void testBoard() {
