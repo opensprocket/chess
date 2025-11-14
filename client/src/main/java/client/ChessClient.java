@@ -41,6 +41,14 @@ public class ChessClient {
         return "Expected: <username> <password>";
     }
 
+    private String registerUser(String[] params) {
+        if (params.length == 3) {
+            // call out to server
+            return String.format("Logged in as %s", params[0]);
+        }
+        return "Expected: <username> <password> <email>";
+    }
+
     private String help() {
         if (state == State.SIGNED_OUT) {
             return """
