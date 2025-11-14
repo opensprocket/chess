@@ -32,6 +32,15 @@ public class ChessClient {
             default -> help();
         };
     }
+
+    private String login(String[] params) {
+        if (params.length == 2) {
+            // call out to server
+            return String.format("Logged in as %s", params[0]);
+        }
+        return "Expected: <username> <password>";
+    }
+
     private String help() {
         if (state == State.SIGNED_OUT) {
             return """
