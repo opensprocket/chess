@@ -3,10 +3,10 @@ import ui.EscapeSequences;
 import java.util.Scanner;
 
 public class Repl {
+    private final ChessClient client;
 
-
-    public Repl() {
-//        ChessClient client = new ChessClient(serverUrl);
+    public Repl(String serverUrl) {
+        client = new ChessClient(serverUrl);
     }
 
     public void run() {
@@ -14,13 +14,24 @@ public class Repl {
         var result = "";
 
         boolean run = true;
+
+        System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + "Chess Client Online");
         while (run) {
             String line = scanner.nextLine();
-            System.out.println(line);
 
-            if (line.toLowerCase().equals("quit")) {
-                run = false;
+            try {
+                if (line.equalsIgnoreCase("quit")) {
+                    System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + "Goodbye!");
+                    run = false;
+                    continue;
+                }
+            } catch (Throwable e) {
+                String msg = e.toString();
+                System.out.print(msg);
             }
+
+
+            System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE + "You typed: " + line);
         }
     }
 }
