@@ -64,6 +64,32 @@ public class ChessClient {
         return "Expected: <name>";
     }
 
+    private String listGames() {
+        assertSignedIn();
+        // call out to server
+
+        return "List of games...";
+    }
+
+    private String joinGame(String[] params) {
+        assertSignedIn();
+
+        // call out to server
+        if (params.length == 2) {
+            return String.format("Joined game %s as %s", params[0], params[1]);
+        }
+        return "Expected <game number> [WHITE|BLACK]";
+    }
+
+    private String joinAsObserver(String[] params) {
+        assertSignedIn();
+        if (params.length == 1) {
+            // call out to server
+            return String.format("Observing game %s", params[0]);
+        }
+        return "Expected: <game number>";
+    }
+
     private String help() {
         if (state == State.SIGNED_OUT) {
             return """
