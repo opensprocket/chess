@@ -1,10 +1,8 @@
 package service;
 
+import chess.datamodel.*;
 import dataaccess.*;
-import datamodel.*;
 import org.mindrot.jbcrypt.BCrypt;
-
-import javax.xml.crypto.Data;
 
 
 public class UserService {

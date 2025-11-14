@@ -1,4 +1,4 @@
-package datamodel;
+package chess.datamodel;
 
 import java.util.Collection;
 

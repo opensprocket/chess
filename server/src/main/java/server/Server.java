@@ -1,11 +1,10 @@
 package server;
 
+import chess.datamodel.*;
 import com.google.gson.Gson;
 import io.javalin.*;
 import io.javalin.http.Context;
 import dataaccess.*;
-import datamodel.*;
-import jakarta.servlet.Registration;
 import org.jetbrains.annotations.NotNull;
 import service.*;
 

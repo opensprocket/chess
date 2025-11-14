@@ -1,8 +1,10 @@
 package dataaccess;
 
 import chess.ChessGame;
+import chess.datamodel.AuthData;
+import chess.datamodel.GameData;
+import chess.datamodel.UserData;
 import com.google.gson.Gson;
-import datamodel.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.ResultSet;

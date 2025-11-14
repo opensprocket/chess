@@ -1,3 +1,3 @@
-package datamodel;
+package chess.datamodel;
 
 public record GameInfo(int gameID, String whiteUsername, String blackUsername, String gameName) {}

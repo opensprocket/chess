@@ -1,7 +1,9 @@
 package dataaccess;
 
 import chess.ChessGame;
-import datamodel.*;
+import chess.datamodel.AuthData;
+import chess.datamodel.GameData;
+import chess.datamodel.UserData;
 import org.junit.jupiter.api.*;
 
 import java.util.Collection;

@@ -1,10 +1,8 @@
 package service;
 
+import chess.datamodel.UserData;
 import dataaccess.*;
-import datamodel.*;
 import org.junit.jupiter.api.*;
-
-import javax.xml.crypto.Data;
 
 import static org.junit.jupiter.api.Assertions.*;
 

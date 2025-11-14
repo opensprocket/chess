@@ -1,10 +1,10 @@
 package service;
 
 import chess.ChessGame;
+import chess.datamodel.*;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
-import datamodel.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

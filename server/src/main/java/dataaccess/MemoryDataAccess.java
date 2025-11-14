@@ -1,9 +1,9 @@
 package dataaccess;
 
 import chess.ChessGame;
-import datamodel.AuthData;
-import datamodel.GameData;
-import datamodel.UserData;
+import chess.datamodel.AuthData;
+import chess.datamodel.GameData;
+import chess.datamodel.UserData;
 
 import java.util.Collection;
 import java.util.HashMap;

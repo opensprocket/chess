@@ -1,8 +1,8 @@
 package service;
 
 import chess.ChessGame;
+import chess.datamodel.*;
 import dataaccess.*;
-import datamodel.*;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
