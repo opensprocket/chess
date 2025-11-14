@@ -15,4 +15,24 @@ public class ChessClient {
         this.server = new ServerFacade(serverUrl);
         this.state = State.SIGNED_OUT;
     }
+    private String help() {
+        if (state == State.SIGNED_OUT) {
+            return """
+                    - register <username> <password <email>
+                    - login <username> <password>
+                    - quit
+                    - help
+                   """;
+        } else {
+            return """
+                    - create <name>
+                    - list
+                    - join <game number> [WHITE|BLACK]
+                    - observe <game number>
+                    - logout
+                    - quit
+                    - help
+                   """;
+        }
+    }
 }
