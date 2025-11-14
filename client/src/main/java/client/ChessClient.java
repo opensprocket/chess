@@ -36,6 +36,7 @@ public class ChessClient {
     private String login(String[] params) {
         if (params.length == 2) {
             // call out to server
+            state = State.SIGNED_IN;
             return String.format("Logged in as %s", params[0]);
         }
         return "Expected: <username> <password>";
@@ -117,6 +118,16 @@ public class ChessClient {
         if (state == State.SIGNED_OUT) {
             throw new RuntimeException("You must sign in for this");
         }
+    }
+
+    public String getState() {
+
+        return switch (state) {
+            case State.SIGNED_OUT -> "Logged Out";
+            case State.SIGNED_IN ->  "Logged In ";
+            case State.IN_GAME ->    "In Game   ";
+            default -> "Error State";
+        };
     }
 
 }
