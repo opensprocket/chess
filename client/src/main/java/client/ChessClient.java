@@ -15,6 +15,24 @@ public class ChessClient {
         this.server = new ServerFacade(serverUrl);
         this.state = State.SIGNED_OUT;
     }
+
+    public String eval(String input) {
+        var tokens = input.toLowerCase().split(" ");
+        var cmd = (tokens.length > 0) ? tokens[0] : "help";
+        String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
+
+        return switch (cmd) {
+            case "login" -> login(params);
+            case "register" -> registerUser(params);
+            case "logout" -> logout();
+            case "create" -> createGame(params);
+            case "list" -> listGames();
+            case "join" -> joinGame(params);
+            case "observe" -> joinAsObserver(params);
+            case "quit" -> "quit";
+            default -> help();
+        };
+    }
     private String help() {
         if (state == State.SIGNED_OUT) {
             return """
