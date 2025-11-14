@@ -49,6 +49,11 @@ public class ChessClient {
         return "Expected: <username> <password> <email>";
     }
 
+    private String logout() {
+        state = State.SIGNED_OUT;
+        return "Logged out.";
+    }
+
     private String help() {
         if (state == State.SIGNED_OUT) {
             return """
