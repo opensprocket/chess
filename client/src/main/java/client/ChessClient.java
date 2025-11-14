@@ -9,7 +9,7 @@ public class ChessClient {
     private final ServerFacade server;
     private State state;
 
-    public ChessClient(String serverUrl, ServerFacade server) {
+    public ChessClient(String serverUrl) {
 
         this.serverUrl = serverUrl;
         this.server = new ServerFacade(serverUrl);
