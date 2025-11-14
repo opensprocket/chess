@@ -54,6 +54,16 @@ public class ChessClient {
         return "Logged out.";
     }
 
+
+    private String createGame(String[] params) {
+        assertSignedIn();
+        if (params.length == 1) {
+            // call out to server
+            return String.format("Created game: %s", params[0]);
+        }
+        return "Expected: <name>";
+    }
+
     private String help() {
         if (state == State.SIGNED_OUT) {
             return """
