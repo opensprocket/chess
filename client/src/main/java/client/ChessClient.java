@@ -35,4 +35,11 @@ public class ChessClient {
                    """;
         }
     }
+
+    private void assertSignedIn() {
+        if (state == State.SIGNED_OUT) {
+            throw new RuntimeException("You must sign in for this");
+        }
+    }
+
 }
