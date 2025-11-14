@@ -1,7 +1,6 @@
 package client;
 
 import java.util.Arrays;
-import client.State;
 
 public class ChessClient {
 
