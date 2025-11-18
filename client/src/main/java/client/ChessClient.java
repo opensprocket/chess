@@ -114,25 +114,43 @@ public class ChessClient {
         return sb.toString();
     }
 
-    private String joinGame(String[] params) {
+    private String joinGame(String[] params) throws FacadeException, NumberFormatException {
         assertSignedIn();
 
         // call out to server for game_id
         if (params.length == 2) {
+            if (this.gameList == null) {
+                try {
+                    listGames();
+                } catch (Exception ex) {
+                    throw new FacadeException("You must create a game before attempting to join one");
+                }
+            }
 
-//            if (!params[1].equalsIgnoreCase("WHITE") || !params[1].equalsIgnoreCase("BLACK")) {
-//                return "Error: Invalid color, must be WHITE or BLACK";
-//            }
+            int gameNumber = Integer.parseInt(params[0]);
+            if (gameNumber < 1 || gameNumber > this.gameList.size()) {
+                throw new RuntimeException("Invalid game number, run 'list' to see all valid choices");
+            }
 
-            ChessGame.TeamColor perspective = (params[1].equalsIgnoreCase("WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+            int gameID = this.gameList.get(gameNumber - 1).gameID();
 
-            // TODO: call server facade and join game
+            String playerColor = params[1].toUpperCase();
+            if (!"WHITE".equals(playerColor) && !"BLACK".equals(playerColor)) {
+                throw new RuntimeException("Invalid color, must be [WHITE|white] or [BLACK|black]");
+            }
+
+            server.joinGame(gameID, playerColor, this.authToken);
+            state = State.IN_GAME;
+
+            ChessGame.TeamColor perspective = (playerColor.equalsIgnoreCase("white")) ?
+                    ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
 
             ChessBoard board = new ChessBoard();
             board.resetBoard();
             DisplayGameboard.drawBoard(board, perspective);
 
-            return String.format("Joined game %s as %s", params[0], params[1]);
+            return String.format("Joined game #%d as %s", gameNumber, playerColor);
+
         }
         return "Expected <game number> [WHITE|BLACK]";
     }

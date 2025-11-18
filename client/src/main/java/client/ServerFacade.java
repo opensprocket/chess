@@ -1,5 +1,6 @@
 package client;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -49,6 +50,18 @@ public class ServerFacade {
 
     public ListGameResult listGames(String authToken) throws FacadeException {
         return makeRequest("GET", "/game", null, authToken, ListGameResult.class);
+    }
+
+    public void joinGame(int gameID, String playerColor, String authToken) throws FacadeException {
+        ChessGame.TeamColor team = null;
+        if ("WHITE".equalsIgnoreCase(playerColor)) {
+            team = ChessGame.TeamColor.WHITE;
+        } else if ("BLACK".equalsIgnoreCase(playerColor)) {
+            team = ChessGame.TeamColor.BLACK;
+        }
+
+        var req = new JoinGameRequest(team, gameID);
+        makeRequest("PUT", "/game", req, authToken, null);
     }
 
     private <T> T makeRequest(String method, String path, Object reqObj, String authToken, Class<T> responseClass) throws FacadeException {
