@@ -47,7 +47,9 @@ public class ServerFacade {
         return new CreateGameResult(res.gameID());
     }
 
-
+    public ListGameResult listGames(String authToken) throws FacadeException {
+        return makeRequest("GET", "/game", null, authToken, ListGameResult.class);
+    }
 
     private <T> T makeRequest(String method, String path, Object reqObj, String authToken, Class<T> responseClass) throws FacadeException {
         try {

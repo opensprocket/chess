@@ -1,5 +1,6 @@
 package client;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -91,11 +92,26 @@ public class ChessClient {
         return "Expected: <name>";
     }
 
-    private String listGames() {
+    private String listGames() throws FacadeException {
         assertSignedIn();
         // call out to server
+        ListGameResult res = server.listGames(this.authToken);
+        this.gameList = new ArrayList<>(res.games());
+        StringBuilder sb = new StringBuilder("Games:\n");
 
-        return "List of games...";
+        if (this.gameList.isEmpty()) {
+            sb.append("\tNo games available.\n");
+        } else {
+            for (int i = 0; i < this.gameList.size(); i++) {
+                GameInfo game = this.gameList.get(i);
+                sb.append(String.format("\t%d. %s \n\t\tWhite: %s\n\t\tBlack: %s\n",
+                        i + 1,
+                        game.gameName(),
+                        game.whiteUsername() != null ? game.whiteUsername() : "empty",
+                        game.blackUsername() != null ? game.blackUsername() : "empty"));
+            }
+        }
+        return sb.toString();
     }
 
     private String joinGame(String[] params) {
