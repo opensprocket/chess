@@ -47,11 +47,13 @@ public class ChessClient {
         return "Test complete";
     }
 
-    private String login(String[] params) {
+    private String login(String[] params) throws FacadeException {
         if (params.length == 2) {
             // call out to server
+            AuthData auth = server.login(params[0], params[1]);
+            this.authToken = auth.authToken();
             state = State.SIGNED_IN;
-            return String.format("Logged in as %s", params[0]);
+            return String.format("Logged in as %s", auth.username());
         }
         return "Expected: <username> <password>";
     }

@@ -31,6 +31,12 @@ public class ServerFacade {
         return new AuthData(res.authToken(), res.username());
     }
 
+    public AuthData login(String username, String password) throws FacadeException {
+        var req = new LoginRequest(username, password);
+        var res = makeRequest("POST", "/session", req, null, LoginResult.class);
+        return new AuthData(res.authToken(), res.username());
+    }
+
     private <T> T makeRequest(String method, String path, Object reqObj, String authToken, Class<T> responseClass) throws FacadeException {
         try {
             URI uri = new URI(serverUrl + path);
