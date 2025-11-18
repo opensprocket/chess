@@ -21,5 +21,7 @@ public class ServerFacade {
         this.gson = new Gson();
     }
 
+    public void clearDatabase() throws FacadeException {
+        makeRequest("DELETE", "/db", null, null, null);
     }
 }
