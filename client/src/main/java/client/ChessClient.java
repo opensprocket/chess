@@ -81,7 +81,6 @@ public class ChessClient {
         return "Logged out.";
     }
 
-
     private String createGame(String[] params) throws FacadeException {
         assertSignedIn();
         if (params.length == 1) {
@@ -123,7 +122,7 @@ public class ChessClient {
                 try {
                     listGames();
                 } catch (Exception ex) {
-                    throw new FacadeException("You must create a game before attempting to join one");
+                    throw new RuntimeException("You must create a game before attempting to join one");
                 }
             }
 
@@ -155,21 +154,36 @@ public class ChessClient {
         return "Expected <game number> [WHITE|BLACK]";
     }
 
-    private String joinAsObserver(String[] params) {
+    private String joinAsObserver(String[] params) throws FacadeException, NumberFormatException {
         assertSignedIn();
         if (params.length == 1) {
-            // call out to server for game_id
+            if (this.gameList == null) {
+                try {
+                    listGames();
+                } catch (Exception ex) {
+                    throw new RuntimeException("You must create a game before attempting to join one");
+                }
+            }
 
-            // TODO: call server facade and join game from white perspective
+            int gameNumber = Integer.parseInt(params[0]);
+            if (gameNumber < 1 || gameNumber > this.gameList.size()) {
+                throw new RuntimeException("Invalid game number, run 'list' to see all valid choices");
+            }
+
+            int gameID = this.gameList.get(gameNumber - 1).gameID();
+            server.joinGame(gameID,null, this.authToken);
+            state = State.OBSERVING_GAME;
 
             ChessBoard board = new ChessBoard();
             board.resetBoard();
             DisplayGameboard.drawBoard(board, ChessGame.TeamColor.WHITE);
 
-            return String.format("Observing game %s", params[0]);
+            return String.format("Observing game %s", gameNumber);
         }
         return "Expected: <game number>";
     }
+
+
 
     private String help() {
         if (state == State.SIGNED_OUT) {
@@ -203,9 +217,10 @@ public class ChessClient {
     public String getState() {
 
         return switch (state) {
-            case State.SIGNED_OUT -> "Logged Out";
-            case State.SIGNED_IN ->  "Logged In ";
-            case State.IN_GAME ->    "In Game   ";
+            case State.SIGNED_OUT ->        "Logged Out";
+            case State.SIGNED_IN ->         "Logged In ";
+            case State.IN_GAME ->           "In Game   ";
+            case State.OBSERVING_GAME ->    "Observing ";
             default -> "Error State";
         };
     }
