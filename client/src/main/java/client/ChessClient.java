@@ -1,10 +1,11 @@
 package client;
 
 import java.util.Arrays;
+import java.util.List;
 
 import chess.ChessBoard;
 import chess.ChessGame;
-import chess.datamodel.AuthData;
+import chess.datamodel.*;
 
 public class ChessClient {
 
@@ -12,6 +13,7 @@ public class ChessClient {
     private final ServerFacade server;
     private State state;
     private String authToken = null;
+    private List<GameInfo> gameList = null;
 
     public ChessClient(String serverUrl) {
 
@@ -69,7 +71,11 @@ public class ChessClient {
         return "Expected: <username> <password> <email>";
     }
 
-    private String logout() {
+    private String logout() throws FacadeException {
+        assertSignedIn();
+        server.logout(this.authToken);
+        this.authToken = null;
+        this.gameList = null;
         state = State.SIGNED_OUT;
         return "Logged out.";
     }

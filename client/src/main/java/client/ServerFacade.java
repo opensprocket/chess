@@ -37,6 +37,9 @@ public class ServerFacade {
         return new AuthData(res.authToken(), res.username());
     }
 
+    public void logout(String authToken) throws FacadeException {
+        makeRequest("DELETE", "/session", null, authToken, null);
+    }
     private <T> T makeRequest(String method, String path, Object reqObj, String authToken, Class<T> responseClass) throws FacadeException {
         try {
             URI uri = new URI(serverUrl + path);
