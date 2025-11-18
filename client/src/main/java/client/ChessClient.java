@@ -54,7 +54,8 @@ public class ChessClient {
     private String registerUser(String[] params) {
         if (params.length == 3) {
             // call out to server
-            return String.format("Logged in as %s", params[0]);
+            state = State.SIGNED_IN;
+            return String.format("Registration successful, logged in as %s", params[0]);
         }
         return "Expected: <username> <password> <email>";
     }
