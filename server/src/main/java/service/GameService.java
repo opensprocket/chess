@@ -39,7 +39,7 @@ public class GameService {
 
         // observer
         if (req.playerColor() == null) {
-            return;
+            throw new DataAccessException("Error: bad request");
         }
 
         // player
