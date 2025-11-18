@@ -13,8 +13,7 @@ public class ServerFacadeTests {
 
     private static Server server;
     private static ServerFacade facade;
-
-    private static int port;
+    
     private static String serverUrl;
 
     private final String usr1 = "player1";
