@@ -25,6 +25,12 @@ public class ServerFacade {
         makeRequest("DELETE", "/db", null, null, null);
     }
 
+    public AuthData register(String username, String password, String email) throws FacadeException {
+        var req = new UserData(username, password, email);
+        var res = makeRequest("POST", "/user", req, null, RegistrationResult.class);
+        return new AuthData(res.authToken(), res.username());
+    }
+
     private <T> T makeRequest(String method, String path, Object reqObj, String authToken, Class<T> responseClass) throws FacadeException {
         try {
             URI uri = new URI(serverUrl + path);
@@ -33,9 +39,10 @@ public class ServerFacade {
             String reqBody = (reqObj == null) ? "" : gson.toJson(reqObj);
 
             HttpRequest.BodyPublisher bodyPublisher = (reqBody.isEmpty()) ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofString(reqBody);
+            builder.method(method, bodyPublisher);
 
             if (!reqBody.isEmpty()) {
-                builder.header("Cotent-Type", "application/json");
+                builder.header("Content-Type", "application/json");
             }
             if (authToken != null) {
                 builder.header("Authorization", authToken);
