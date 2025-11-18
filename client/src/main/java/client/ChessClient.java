@@ -81,10 +81,11 @@ public class ChessClient {
     }
 
 
-    private String createGame(String[] params) {
+    private String createGame(String[] params) throws FacadeException {
         assertSignedIn();
         if (params.length == 1) {
             // call out to server
+            server.createGame(params[0], this.authToken);
             return String.format("Created game: %s", params[0]);
         }
         return "Expected: <name>";
