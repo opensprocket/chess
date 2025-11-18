@@ -32,9 +32,18 @@ public class ServerFacadeTests {
         facade.register(usr1, pass1, email1);
     }
 
+    public void  regUsr2() throws FacadeException {
+        facade.register(usr2, pass2, email2);
+    }
+
     public AuthData regAndAuthUsr1() throws  FacadeException {
         return facade.register(usr1, pass1, email1);
     }
+
+    public AuthData regAndAuthUsr2() throws FacadeException {
+        return facade.register(usr2, pass2, email2);
+    }
+
 
 
     @BeforeAll
@@ -139,7 +148,46 @@ public class ServerFacadeTests {
         assertDoesNotThrow(() -> facade.joinGame(gameID, "white", auth.authToken()));
     }
 
-    
+    @Test
+    void joinGameFail() throws FacadeException {
+        AuthData authData = regAndAuthUsr1();
+        int gameID = -1;
+        assertThrows(FacadeException.class, () -> facade.joinGame(gameID, "white", authData.authToken()));
+    }
+
+    @Test
+    void joinObserverSuccess() throws FacadeException {
+        AuthData auth = regAndAuthUsr1();
+        int gameID = facade.createGame(game1, auth.authToken()).gameID();
+        assertDoesNotThrow(() -> facade.joinGame(gameID, "black", auth.authToken()));
+    }
+
+    @Test
+    void joinObserverFail() throws FacadeException {
+        AuthData auth = regAndAuthUsr1();
+        int gameID = 0;
+        assertThrows(FacadeException.class, () -> facade.joinGame(gameID, "white", auth.authToken()));
+    }
+
+    @Test
+    void joinGameAlreadyTaken() throws FacadeException {
+        AuthData auth1 = regAndAuthUsr1();
+        AuthData auth2 = regAndAuthUsr2();
+
+        int gameID = facade.createGame(game1, auth2.authToken()).gameID();
+
+        facade.joinGame(gameID, "white", auth1.authToken());
+
+        assertThrows(FacadeException.class, () -> facade.joinGame(gameID, "white", auth2.authToken()));
+    }
+
+    @Test
+    void joinGameInvalidGameID() throws FacadeException {
+        AuthData auth = regAndAuthUsr1();
+        int fakeID = 1337;
+        assertThrows(FacadeException.class, () -> facade.joinGame(fakeID, "white", auth.authToken()));
+    }
+
 
 
 
