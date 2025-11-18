@@ -4,12 +4,14 @@ import java.util.Arrays;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import chess.datamodel.AuthData;
 
 public class ChessClient {
 
     private final String serverUrl;
     private final ServerFacade server;
     private State state;
+    private String authToken = null;
 
     public ChessClient(String serverUrl) {
 
@@ -22,19 +24,22 @@ public class ChessClient {
         var tokens = input.toLowerCase().split(" ");
         var cmd = (tokens.length > 0) ? tokens[0] : "help";
         String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
-
-        return switch (cmd) {
-            case "login" -> login(params);
-            case "register" -> registerUser(params);
-            case "logout" -> logout();
-            case "create" -> createGame(params);
-            case "list" -> listGames();
-            case "join" -> joinGame(params);
-            case "observe" -> joinAsObserver(params);
-            case "testprint" -> testPrint();
-            case "quit" -> "quit";
-            default -> help();
-        };
+        try {
+            return switch (cmd) {
+                case "login" -> login(params);
+                case "register" -> registerUser(params);
+                case "logout" -> logout();
+                case "create" -> createGame(params);
+                case "list" -> listGames();
+                case "join" -> joinGame(params);
+                case "observe" -> joinAsObserver(params);
+                case "testprint" -> testPrint();
+                case "quit" -> "quit";
+                default -> help();
+            };
+        } catch (Exception ex) {
+            return "Error: " + ex.getMessage();
+        }
     }
 
     private String testPrint() {
@@ -51,11 +56,13 @@ public class ChessClient {
         return "Expected: <username> <password>";
     }
 
-    private String registerUser(String[] params) {
+    private String registerUser(String[] params) throws FacadeException {
         if (params.length == 3) {
             // call out to server
+            AuthData auth = server.register(params[0], params[1], params[2]);
+            this.authToken = auth.authToken();
             state = State.SIGNED_IN;
-            return String.format("Registration successful, logged in as %s", params[0]);
+            return String.format("Registration successful, logged in as %s", auth.username());
         }
         return "Expected: <username> <password> <email>";
     }
