@@ -17,11 +17,11 @@ public class DisplayGameboard {
     private static final String PIECE_COLOR_WHITE = EscapeSequences.SET_TEXT_COLOR_RED;
     private static final String PIECE_COLOR_BLACK = EscapeSequences.SET_TEXT_COLOR_BLUE;
 
-    public static void drawBoard(ChessBoard board, ChessGame.TeamColor render_as) {
+    public static void drawBoard(ChessBoard board, ChessGame.TeamColor renderAs) {
         PrintStream out = new PrintStream(System.out, true);
         out.print(EscapeSequences.ERASE_SCREEN);
 
-        if (render_as == ChessGame.TeamColor.BLACK) {
+        if (renderAs == ChessGame.TeamColor.BLACK) {
             drawBlackPerspective(out, board);
         } else {
             drawWhitePerspective(out, board);

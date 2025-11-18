@@ -32,10 +32,6 @@ public class ServerFacadeTests {
         facade.register(usr1, pass1, email1);
     }
 
-    public void  regUsr2() throws FacadeException {
-        facade.register(usr2, pass2, email2);
-    }
-
     public AuthData regAndAuthUsr1() throws  FacadeException {
         return facade.register(usr1, pass1, email1);
     }

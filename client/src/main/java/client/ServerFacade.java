@@ -71,7 +71,8 @@ public class ServerFacade {
 
             String reqBody = (reqObj == null) ? "" : gson.toJson(reqObj);
 
-            HttpRequest.BodyPublisher bodyPublisher = (reqBody.isEmpty()) ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofString(reqBody);
+            HttpRequest.BodyPublisher bodyPublisher = (reqBody.isEmpty()) ?
+                    HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofString(reqBody);
             builder.method(method, bodyPublisher);
 
             if (!reqBody.isEmpty()) {
