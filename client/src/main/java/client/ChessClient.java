@@ -126,7 +126,14 @@ public class ChessClient {
                 }
             }
 
-            int gameNumber = Integer.parseInt(params[0]);
+            int gameNumber;
+
+            try {
+                gameNumber = Integer.parseInt(params[0]);
+            } catch (NumberFormatException ex) {
+                throw new RuntimeException("Invalid game number, please enter a number");
+            }
+
             if (gameNumber < 1 || gameNumber > this.gameList.size()) {
                 throw new RuntimeException("Invalid game number, run 'list' to see all valid choices");
             }
