@@ -31,7 +31,7 @@ public class Repl {
                 System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE + result);
 
             } catch (Throwable e) {
-                String msg = e.toString();
+                String msg = e.getMessage();
                 System.out.print(msg);
             }
             System.out.println();
