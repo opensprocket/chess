@@ -41,7 +41,7 @@ public class ChessClient {
                 default -> help();
             };
         } catch (Exception ex) {
-            return "Error: " + ex.getMessage();
+            return ex.getMessage();
         }
     }
 
@@ -171,7 +171,6 @@ public class ChessClient {
             }
 
             int gameID = this.gameList.get(gameNumber - 1).gameID();
-            server.joinGame(gameID,null, this.authToken);
             state = State.OBSERVING_GAME;
 
             ChessBoard board = new ChessBoard();
