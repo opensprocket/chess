@@ -3,7 +3,7 @@ package client;
 import chess.ChessGame;
 import com.google.gson.Gson;
 
-import java.io.IOException;
+import java.util.Map;
 import java.net.*;
 import java.net.http.*;
 import chess.datamodel.*;
@@ -93,23 +93,33 @@ public class ServerFacade {
     }
 
     private <T> T handleResponse(HttpResponse<String> res, Class<T> responseClass) throws FacadeException {
-        try {
-            if (res.statusCode() >= 200 && res.statusCode() < 300) {
+        if (res.statusCode() >= 200 && res.statusCode() < 300) {
+            try {
                 if (responseClass != null && res.body() != null && !res.body().isEmpty()) {
                     return gson.fromJson(res.body(), responseClass);
                 } else {
                     return null;
                 }
-            } else {
-                try {
-                    ErrorResponse errRes = gson.fromJson(res.body(), ErrorResponse.class);
-                    throw new FacadeException(errRes.message());
-                } catch (Exception ex) {
-                    throw new FacadeException(String.format("Error: %d - %s", res.statusCode(), res.body()));
-                }
+            } catch (Exception ex) {
+                throw new FacadeException(ex.getMessage());
             }
-        } catch (Exception ex) {
-            throw new FacadeException(ex.getMessage());
+        } else {
+
+            String errorMessage = null;
+            try {
+                Map errorObj = gson.fromJson(res.body(), Map.class);
+                if (errorObj != null && errorObj.containsKey("message")) {
+                    errorMessage = (String) errorObj.get("message");
+                }
+            } catch (Exception ex) {
+
+            }
+
+            if (errorMessage != null) {
+                throw new FacadeException(errorMessage);
+            } else {
+                throw new FacadeException(String.format("Error: %d - %s", res.statusCode(), res.body()));
+            }
         }
     }
 
