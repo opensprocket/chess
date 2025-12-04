@@ -236,13 +236,11 @@ public class ChessClient {
         return "Expected: <game number>";
     }
 
-
-
     private String help() {
         if (state == State.SIGNED_OUT) {
             return """
                     Commands available:
-                    - register <username> <password <email>
+                    - register <username> <password> <email>
                     - login <username> <password>
                     - quit
                     - help
@@ -268,7 +266,6 @@ public class ChessClient {
     }
 
     public String getState() {
-
         return switch (state) {
             case State.SIGNED_OUT ->        "Logged Out";
             case State.SIGNED_IN ->         "Logged In ";
@@ -277,5 +274,4 @@ public class ChessClient {
             default -> "Error State";
         };
     }
-
 }
