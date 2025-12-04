@@ -84,4 +84,9 @@ public class WebSocketCommunicator {
         sendMessage(command);
     }
 
+    public void resign(String authToken, Integer gameID) throws IOException {
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
+        sendMessage(command);
+    }
+
 }
