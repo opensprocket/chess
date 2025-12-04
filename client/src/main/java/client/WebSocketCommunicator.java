@@ -94,4 +94,14 @@ public class WebSocketCommunicator {
         this.session.getBasicRemote().sendText(jsonMessage);
     }
 
+    public void close() {
+        try {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        } catch (IOException e) {
+            // Ignore
+        }
+    }
+
 }
