@@ -6,6 +6,8 @@ import io.javalin.*;
 import io.javalin.http.Context;
 import dataaccess.*;
 import org.jetbrains.annotations.NotNull;
+import server.websocket.ConnectionManager;
+import server.websocket.WebSocketHandler;
 import service.*;
 
 public class Server {
@@ -16,7 +18,8 @@ public class Server {
     private final GameService gameService;
     private final ClearService clearService;
     private final Gson serializer = new Gson();
-
+    private final ConnectionManager connectionManager = new ConnectionManager();
+    private WebSocketHandler wsHandler;
 
     public Server() {
         try {
@@ -27,11 +30,21 @@ public class Server {
         this.userService = new UserService(dataAccess);
         this.gameService = new GameService(dataAccess);
         this.clearService = new ClearService(dataAccess);
+        this.wsHandler = new WebSocketHandler(connectionManager, dataAccess);
 
         server = Javalin.create(config -> config.staticFiles.add("web"));
 
-        // Register your endpoints and exception handlers here.
+        // WebSocket endpoint
+        server.ws("/ws", ws -> {
+            ws.onConnect(ctx -> {
+                ctx.enableAutomaticPings();
+                wsHandler.onConnect(ctx);
+            });
+            ws.onMessage(wsHandler::onMessage);
+            ws.onClose(wsHandler::onClose);
+        });
 
+        // HTTP endpoints
         server.delete("/db", this::clearDatabase);
         server.post("/user", this::register);
         server.post("/session", this::login);
