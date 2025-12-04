@@ -198,19 +198,15 @@ public class ChessGame {
         if (gameOver) {
             throw new InvalidMoveException("Game is over");
         }
-
         // starting position
         if (piece == null) {
             throw new InvalidMoveException("No piece at starting position.");
         }
-
         // wrong turn
         if (piece.getTeamColor() != currentTurn) {
             throw new InvalidMoveException("Cannot move piece, it is " + currentTurn + " 's turn.");
         }
-
         Collection<ChessMove> allowedMoves = validMoves(startPos);
-
         // is proposed move allowed?
         if (!allowedMoves.contains(move)) {
             // check promotion pieces
@@ -230,7 +226,6 @@ public class ChessGame {
         }
         // move piece
         board.movePiece(move);
-
         // castling rook move
         if (piece.getPieceType() == ChessPiece.PieceType.KING) {
             int colDiff = move.getEndPosition().getColumn() - startPos.getColumn();
@@ -247,12 +242,10 @@ public class ChessGame {
                 }
             }
         }
-
         // en passant state tracking
         ChessPosition pawnStart = move.getStartPosition();
         ChessPosition pawnEnd = move.getEndPosition();
         ChessPiece movedPiece = board.getPiece(pawnEnd);
-
         // clear target square
         board.setEnPassantTgtSquare(null);
 
