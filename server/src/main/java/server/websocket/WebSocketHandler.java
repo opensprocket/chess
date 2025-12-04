@@ -233,4 +233,49 @@ public class WebSocketHandler {
         }
     }
 
+    private void handleResign(WsMessageContext ctx, UserGameCommand command) {
+        try {
+            // Validate auth
+            AuthData auth = dataAccess.getAuth(command.getAuthToken());
+            if (auth == null) {
+                sendError(ctx, "Error: Invalid authentication");
+                return;
+            }
+
+            // Get game
+            GameData gameData = dataAccess.getGame(command.getGameID());
+            if (gameData == null) {
+                sendError(ctx, "Error: Game not found");
+                return;
+            }
+
+            String username = auth.username();
+
+            // Verify user is a player
+            if (!username.equals(gameData.whiteUsername()) && !username.equals(gameData.blackUsername())) {
+                sendError(ctx, "Error: Observers cannot resign");
+                return;
+            }
+
+            // Check if game is already over
+            if (gameData.game().isGameOver()) {
+                sendError(ctx, "Error: Game is already over");
+                return;
+            }
+
+            // Mark game as over
+            gameData.game().setGameOver(true);
+            dataAccess.updateGame(command.getGameID(), gameData);
+
+            // Notify all clients (including root)
+            String notification = username + " resigned. Game over.";
+            NotificationMessage message = new NotificationMessage(notification);
+            connections.broadcast(command.getGameID(), message, null);
+            connections.sendToClient(command.getGameID(), command.getAuthToken(), message);
+
+        } catch (Exception e) {
+            sendError(ctx, "Error: " + e.getMessage());
+        }
+    }
+
 }
