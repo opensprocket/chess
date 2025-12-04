@@ -176,8 +176,11 @@ public class ChessClient {
                 webSocket = null;
                 state = State.SIGNED_IN;
 
-            return String.format("Joined game #%d as %s", gameNumber, playerColor);
+                return "Returned to lobby";
 
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to connect to game: " + e.getMessage());
+            }
         }
         return "Expected <game number> [WHITE|BLACK]";
     }
