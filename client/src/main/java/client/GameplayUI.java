@@ -92,3 +92,12 @@ public class GameplayUI implements WebSocketCommunicator.NotificationHandler {
         System.out.println("  highlight <pos>   - Highlight legal moves for a piece (e.g., 'highlight e2')");
     }
 
+    private void redrawBoard() {
+        if (currentGame != null) {
+            DisplayGameboard.drawBoard(currentGame.getBoard(),
+                    isObserver ? ChessGame.TeamColor.WHITE : playerColor);
+        } else {
+            System.out.println("No game loaded yet.");
+        }
+    }
+
