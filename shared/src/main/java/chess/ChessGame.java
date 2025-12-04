@@ -22,6 +22,7 @@ public class ChessGame {
     private boolean whiteQueensideRookMoved = false;
     private boolean blackKingSideRookMoved = false;
     private boolean blackQueenSideRookMoved = false;
+    private boolean gameOver = false;
 
     @Override
     public boolean equals(Object o) {
@@ -193,6 +194,10 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition startPos = move.getStartPosition();
         ChessPiece piece = board.getPiece(startPos);
+
+        if (gameOver) {
+            throw new InvalidMoveException("Game is over");
+        }
 
         // starting position
         if (piece == null) {
@@ -468,5 +473,13 @@ public class ChessGame {
             }
         }
         return potentialMoves;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
     }
 }
