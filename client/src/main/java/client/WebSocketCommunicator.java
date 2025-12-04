@@ -58,4 +58,10 @@ public class WebSocketCommunicator {
             notificationHandler.onError("Error processing message: " + e.getMessage());
         }
     }
+
+    @OnClose
+    public void onClose(Session session, CloseReason closeReason) {
+        System.out.println("WebSocket closed: " + closeReason.getReasonPhrase());
+    }
+
 }
