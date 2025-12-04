@@ -145,17 +145,30 @@ public class ChessClient {
             }
 
             int gameID = this.gameList.get(gameNumber - 1).gameID();
-
             String playerColor = params[1].toUpperCase();
             if (!"WHITE".equals(playerColor) && !"BLACK".equals(playerColor)) {
-                throw new RuntimeException("Invalid color, must be [WHITE|white] or [BLACK|black]");
+                throw new RuntimeException("Invalid color, must be WHITE or BLACK");
             }
 
+            // Join via HTTP first
             server.joinGame(gameID, playerColor, this.authToken);
-            state = State.IN_GAME;
 
-            ChessGame.TeamColor perspective = (playerColor.equalsIgnoreCase("white")) ?
-                    ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+            // Connect via WebSocket
+            try {
+                ChessGame.TeamColor color = playerColor.equalsIgnoreCase("white") ?
+                        ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+
+                webSocket = new WebSocketCommunicator(serverUrl,
+                        new GameplayUI(scanner, null, authToken, gameID, color, false));
+
+                GameplayUI gameplayUI = new GameplayUI(scanner, webSocket, authToken, gameID, color, false);
+                webSocket = new WebSocketCommunicator(serverUrl, gameplayUI);
+
+                webSocket.connect(authToken, gameID);
+                state = State.IN_GAME;
+
+                // Enter gameplay loop
+                gameplayUI.run();
 
             ChessBoard board = new ChessBoard();
             board.resetBoard();
