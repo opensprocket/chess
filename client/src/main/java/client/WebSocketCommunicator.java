@@ -28,4 +28,10 @@ public class WebSocketCommunicator {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         this.session = container.connectToServer(this, uri);
     }
+
+    @OnOpen
+    public void onOpen(Session session, EndpointConfig config) {
+        // Connection opened
+        this.session = session;
+    }
 }
