@@ -296,4 +296,11 @@ public class WebSocketHandler {
         return "" + col + pos.getRow();
     }
 
+    private String getPlayerName(GameData game, ChessGame.TeamColor color) {
+        if (color == ChessGame.TeamColor.WHITE) {
+            return game.whiteUsername() != null ? game.whiteUsername() : "White";
+        } else {
+            return game.blackUsername() != null ? game.blackUsername() : "Black";
+        }
+    }
 }
