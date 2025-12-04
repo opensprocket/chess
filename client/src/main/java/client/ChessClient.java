@@ -182,7 +182,7 @@ public class ChessClient {
                 throw new RuntimeException("Failed to connect to game: " + e.getMessage());
             }
         }
-        return "Expected <game number> [WHITE|BLACK]";
+        return "Expected: <game number> [WHITE|BLACK]";
     }
 
     private String joinAsObserver(String[] params) throws FacadeException, NumberFormatException {
