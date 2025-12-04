@@ -146,6 +146,7 @@ public class ChessClient {
 
             int gameID = this.gameList.get(gameNumber - 1).gameID();
             String playerColor = params[1].toUpperCase();
+
             if (!"WHITE".equals(playerColor) && !"BLACK".equals(playerColor)) {
                 throw new RuntimeException("Invalid color, must be WHITE or BLACK");
             }
@@ -170,9 +171,10 @@ public class ChessClient {
                 // Enter gameplay loop
                 gameplayUI.run();
 
-            ChessBoard board = new ChessBoard();
-            board.resetBoard();
-            DisplayGameboard.drawBoard(board, perspective);
+                // Clean up after leaving game
+                webSocket.close();
+                webSocket = null;
+                state = State.SIGNED_IN;
 
             return String.format("Joined game #%d as %s", gameNumber, playerColor);
 
