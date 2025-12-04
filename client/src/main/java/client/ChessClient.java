@@ -3,8 +3,8 @@ package client;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
-import chess.ChessBoard;
 import chess.ChessGame;
 import chess.datamodel.*;
 
@@ -12,14 +12,16 @@ public class ChessClient {
 
     private final String serverUrl;
     private final ServerFacade server;
+    private final Scanner scanner;
     private State state;
     private String authToken = null;
     private List<GameInfo> gameList = null;
+    private WebSocketCommunicator webSocket = null;
 
-    public ChessClient(String serverUrl) {
-
+    public ChessClient(String serverUrl, Scanner scanner) {
         this.serverUrl = serverUrl;
         this.server = new ServerFacade(serverUrl);
+        this.scanner = scanner;
         this.state = State.SIGNED_OUT;
     }
 
@@ -74,6 +76,10 @@ public class ChessClient {
 
     private String logout() throws FacadeException {
         assertSignedIn();
+        if (webSocket != null) {
+            webSocket.close();
+            webSocket = null;
+        }
         server.logout(this.authToken);
         this.authToken = null;
         this.gameList = null;
@@ -113,7 +119,7 @@ public class ChessClient {
         return sb.toString();
     }
 
-    private String joinGame(String[] params) throws FacadeException, NumberFormatException {
+    private String joinGame(String[] params) throws FacadeException {
         assertSignedIn();
 
         // call out to server for game_id
@@ -122,7 +128,7 @@ public class ChessClient {
                 try {
                     listGames();
                 } catch (Exception ex) {
-                    throw new RuntimeException("You must create a game before attempting to join one");
+                    throw new RuntimeException("You must list games before joining");
                 }
             }
 
@@ -131,11 +137,11 @@ public class ChessClient {
             try {
                 gameNumber = Integer.parseInt(params[0]);
             } catch (NumberFormatException ex) {
-                throw new RuntimeException("Invalid game number, please enter a number");
+                throw new RuntimeException("Invalid game number");
             }
 
             if (gameNumber < 1 || gameNumber > this.gameList.size()) {
-                throw new RuntimeException("Invalid game number, run 'list' to see all valid choices");
+                throw new RuntimeException("Invalid game number");
             }
 
             int gameID = this.gameList.get(gameNumber - 1).gameID();
