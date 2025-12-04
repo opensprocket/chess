@@ -291,4 +291,9 @@ public class WebSocketHandler {
                 positionToString(move.getEndPosition());
     }
 
+    private String positionToString(chess.ChessPosition pos) {
+        char col = (char) ('a' + pos.getColumn() - 1);
+        return "" + col + pos.getRow();
+    }
+
 }
