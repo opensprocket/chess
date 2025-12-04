@@ -49,4 +49,46 @@ public class WebSocketHandler {
         System.out.println("WebSocket closed");
     }
 
+    private void handleConnect(WsMessageContext ctx, UserGameCommand command) {
+        try {
+            // Validate auth
+            AuthData auth = dataAccess.getAuth(command.getAuthToken());
+            if (auth == null) {
+                sendError(ctx, "Error: Invalid authentication");
+                return;
+            }
+
+            // Validate game exists
+            GameData game = dataAccess.getGame(command.getGameID());
+            if (game == null) {
+                sendError(ctx, "Error: Game not found");
+                return;
+            }
+
+            // Add connection
+            connections.addConnection(command.getGameID(), command.getAuthToken(), ctx.session);
+
+            // Send LOAD_GAME to root client
+            connections.sendToClient(command.getGameID(), command.getAuthToken(),
+                    new LoadGameMessage(game.game()));
+
+            // Determine if player or observer
+            String username = auth.username();
+            String notificationMsg;
+            if (username.equals(game.whiteUsername())) {
+                notificationMsg = username + " joined the game as WHITE";
+            } else if (username.equals(game.blackUsername())) {
+                notificationMsg = username + " joined the game as BLACK";
+            } else {
+                notificationMsg = username + " joined as an observer";
+            }
+
+            // Broadcast notification to others
+            connections.broadcast(command.getGameID(),
+                    new NotificationMessage(notificationMsg), command.getAuthToken());
+
+        } catch (Exception e) {
+            sendError(ctx, "Error: " + e.getMessage());
+        }
+    }
 }
