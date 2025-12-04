@@ -169,3 +169,33 @@ public class GameplayUI implements WebSocketCommunicator.NotificationHandler {
         }
     }
 
+    private void highlightMoves(String[] tokens) {
+        if (tokens.length < 2) {
+            System.out.println("Usage: highlight <position>");
+            System.out.println("Example: highlight e2");
+            return;
+        }
+
+        try {
+            ChessPosition position = parsePosition(tokens[1]);
+
+            if (currentGame == null) {
+                System.out.println("No game loaded.");
+                return;
+            }
+
+            Collection<ChessMove> validMoves = currentGame.validMoves(position);
+
+            if (validMoves == null || validMoves.isEmpty()) {
+                System.out.println("No valid moves for piece at " + tokens[1]);
+                return;
+            }
+
+            DisplayGameboard.drawBoardWithHighlights(currentGame.getBoard(),
+                    isObserver ? ChessGame.TeamColor.WHITE : playerColor, position, validMoves);
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
