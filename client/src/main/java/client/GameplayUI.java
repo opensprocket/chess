@@ -101,3 +101,12 @@ public class GameplayUI implements WebSocketCommunicator.NotificationHandler {
         }
     }
 
+    private void leave() {
+        try {
+            ws.leave(authToken, gameID);
+            System.out.println("Left the game.");
+        } catch (Exception e) {
+            System.out.println("Error leaving game: " + e.getMessage());
+        }
+    }
+
