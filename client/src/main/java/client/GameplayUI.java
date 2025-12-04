@@ -199,3 +199,31 @@ public class GameplayUI implements WebSocketCommunicator.NotificationHandler {
         }
     }
 
+    private ChessPosition parsePosition(String pos) throws IllegalArgumentException {
+        if (pos.length() != 2) {
+            throw new IllegalArgumentException("Invalid position format. Use format like 'e2'");
+        }
+
+        char col = pos.charAt(0);
+        char row = pos.charAt(1);
+
+        if (col < 'a' || col > 'h' || row < '1' || row > '8') {
+            throw new IllegalArgumentException("Invalid position. Use columns a-h and rows 1-8");
+        }
+
+        int colNum = col - 'a' + 1;
+        int rowNum = row - '0';
+
+        return new ChessPosition(rowNum, colNum);
+    }
+
+    private ChessPiece.PieceType parsePromotionPiece(String piece) throws IllegalArgumentException {
+        return switch (piece.toLowerCase()) {
+            case "q", "queen" -> ChessPiece.PieceType.QUEEN;
+            case "r", "rook" -> ChessPiece.PieceType.ROOK;
+            case "b", "bishop" -> ChessPiece.PieceType.BISHOP;
+            case "n", "knight" -> ChessPiece.PieceType.KNIGHT;
+            default -> throw new IllegalArgumentException("Invalid promotion piece. Use q, r, b, or n");
+        };
+    }
+
