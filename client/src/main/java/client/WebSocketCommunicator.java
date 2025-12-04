@@ -74,4 +74,9 @@ public class WebSocketCommunicator {
         sendMessage(command);
     }
 
+    public void makeMove(String authToken, Integer gameID, ChessMove move) throws IOException {
+        MakeMoveCommand command = new MakeMoveCommand(authToken, gameID, move);
+        sendMessage(command);
+    }
+
 }
