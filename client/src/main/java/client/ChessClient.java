@@ -185,53 +185,30 @@ public class ChessClient {
         return "Expected: <game number> [WHITE|BLACK]";
     }
 
-    private String joinAsObserver(String[] params) throws FacadeException {
+    private String joinAsObserver(String[] params) throws FacadeException, NumberFormatException {
         assertSignedIn();
-
         if (params.length == 1) {
             if (this.gameList == null) {
                 try {
                     listGames();
                 } catch (Exception ex) {
-                    throw new RuntimeException("You must list games before observing");
+                    throw new RuntimeException("You must create a game before attempting to join one");
                 }
             }
 
-            int gameNumber;
-            try {
-                gameNumber = Integer.parseInt(params[0]);
-            } catch (NumberFormatException ex) {
-                throw new RuntimeException("Invalid game number");
-            }
-
+            int gameNumber = Integer.parseInt(params[0]);
             if (gameNumber < 1 || gameNumber > this.gameList.size()) {
-                throw new RuntimeException("Invalid game number");
+                throw new RuntimeException("Invalid game number, run 'list' to see all valid choices");
             }
 
             int gameID = this.gameList.get(gameNumber - 1).gameID();
+            state = State.OBSERVING_GAME;
 
-            // Connect via WebSocket as observer
-            try {
-                GameplayUI gameplayUI = new GameplayUI(scanner, null, authToken, gameID,
-                        ChessGame.TeamColor.WHITE, true);
-                webSocket = new WebSocketCommunicator(serverUrl, gameplayUI);
+            ChessBoard board = new ChessBoard();
+            board.resetBoard();
+            DisplayGameboard.drawBoard(board, ChessGame.TeamColor.WHITE);
 
-                webSocket.connect(authToken, gameID);
-                state = State.OBSERVING_GAME;
-
-                // Enter gameplay loop
-                gameplayUI.run();
-
-                // Clean up after leaving game
-                webSocket.close();
-                webSocket = null;
-                state = State.SIGNED_IN;
-
-                return "Returned to lobby";
-
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to observe game: " + e.getMessage());
-            }
+            return String.format("Observing game %s", gameNumber);
         }
         return "Expected: <game number>";
     }
