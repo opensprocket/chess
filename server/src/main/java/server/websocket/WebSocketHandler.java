@@ -186,4 +186,51 @@ public class WebSocketHandler {
             sendError(ctx, "Error: " + e.getMessage());
         }
     }
+
+    private void handleLeave(WsMessageContext ctx, UserGameCommand command) {
+        try {
+            // Validate auth
+            AuthData auth = dataAccess.getAuth(command.getAuthToken());
+            if (auth == null) {
+                sendError(ctx, "Error: Invalid authentication");
+                return;
+            }
+
+            // Get game
+            GameData gameData = dataAccess.getGame(command.getGameID());
+            if (gameData == null) {
+                sendError(ctx, "Error: Game not found");
+                return;
+            }
+
+            String username = auth.username();
+
+            // If player is leaving, remove them from the game
+            if (username.equals(gameData.whiteUsername()) || username.equals(gameData.blackUsername())) {
+                String newWhite = username.equals(gameData.whiteUsername()) ? null : gameData.whiteUsername();
+                String newBlack = username.equals(gameData.blackUsername()) ? null : gameData.blackUsername();
+
+                GameData updatedGame = new GameData(
+                        gameData.gameID(),
+                        newWhite,
+                        newBlack,
+                        gameData.gameName(),
+                        gameData.game()
+                );
+                dataAccess.updateGame(command.getGameID(), updatedGame);
+            }
+
+            // Remove connection
+            connections.removeConnection(command.getGameID(), command.getAuthToken());
+
+            // Notify others
+            String notification = username + " left the game";
+            connections.broadcast(command.getGameID(),
+                    new NotificationMessage(notification), command.getAuthToken());
+
+        } catch (Exception e) {
+            sendError(ctx, "Error: " + e.getMessage());
+        }
+    }
+
 }
