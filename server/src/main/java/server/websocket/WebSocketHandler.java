@@ -91,4 +91,99 @@ public class WebSocketHandler {
             sendError(ctx, "Error: " + e.getMessage());
         }
     }
+
+    private void handleMakeMove(WsMessageContext ctx) {
+        try {
+            // Parse as MakeMoveCommand
+            MakeMoveCommand command = gson.fromJson(ctx.message(), MakeMoveCommand.class);
+            ChessMove move = command.getMove();
+
+            // Validate auth
+            AuthData auth = dataAccess.getAuth(command.getAuthToken());
+            if (auth == null) {
+                sendError(ctx, "Error: Invalid authentication");
+                return;
+            }
+
+            // Get game
+            GameData gameData = dataAccess.getGame(command.getGameID());
+            if (gameData == null) {
+                sendError(ctx, "Error: Game not found");
+                return;
+            }
+
+            ChessGame game = gameData.game();
+            String username = auth.username();
+
+            // Check if game is over
+            if (game.isGameOver()) {
+                sendError(ctx, "Error: Game is over");
+                return;
+            }
+
+            // Verify it's the player's turn
+            ChessGame.TeamColor currentTurn = game.getTeamTurn();
+            if ((currentTurn == ChessGame.TeamColor.WHITE && !username.equals(gameData.whiteUsername())) ||
+                    (currentTurn == ChessGame.TeamColor.BLACK && !username.equals(gameData.blackUsername()))) {
+                sendError(ctx, "Error: It's not your turn");
+                return;
+            }
+
+            // Verify the user is actually a player in this game
+            if (!username.equals(gameData.whiteUsername()) && !username.equals(gameData.blackUsername())) {
+                sendError(ctx, "Error: You are not a player in this game");
+                return;
+            }
+
+            // Make the move
+            game.makeMove(move);
+
+            // Update game in database
+            GameData updatedGame = new GameData(
+                    gameData.gameID(),
+                    gameData.whiteUsername(),
+                    gameData.blackUsername(),
+                    gameData.gameName(),
+                    game
+            );
+            dataAccess.updateGame(command.getGameID(), updatedGame);
+
+            // Broadcast LOAD_GAME to all clients (including root)
+            LoadGameMessage loadGameMessage = new LoadGameMessage(game);
+            connections.broadcast(command.getGameID(), loadGameMessage, null);
+            connections.sendToClient(command.getGameID(), command.getAuthToken(), loadGameMessage);
+
+            // Send move notification to others (not to root)
+            String moveNotification = username + " made move: " + formatMove(move);
+            connections.broadcast(command.getGameID(),
+                    new NotificationMessage(moveNotification), command.getAuthToken());
+
+            // Check for check, checkmate, or stalemate
+            ChessGame.TeamColor opponentColor = (currentTurn == ChessGame.TeamColor.WHITE) ?
+                    ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
+
+            if (game.isInCheckmate(opponentColor)) {
+                String checkmateMsg = getPlayerName(gameData, opponentColor) + " is in checkmate. " +
+                        username + " wins!";
+                NotificationMessage notification = new NotificationMessage(checkmateMsg);
+                connections.broadcast(command.getGameID(), notification, null);
+                connections.sendToClient(command.getGameID(), command.getAuthToken(), notification);
+            } else if (game.isInStalemate(opponentColor)) {
+                String stalemateMsg = "Game ended in stalemate";
+                NotificationMessage notification = new NotificationMessage(stalemateMsg);
+                connections.broadcast(command.getGameID(), notification, null);
+                connections.sendToClient(command.getGameID(), command.getAuthToken(), notification);
+            } else if (game.isInCheck(opponentColor)) {
+                String checkMsg = getPlayerName(gameData, opponentColor) + " is in check";
+                NotificationMessage notification = new NotificationMessage(checkMsg);
+                connections.broadcast(command.getGameID(), notification, null);
+                connections.sendToClient(command.getGameID(), command.getAuthToken(), notification);
+            }
+
+        } catch (InvalidMoveException e) {
+            sendError(ctx, "Error: Invalid move");
+        } catch (Exception e) {
+            sendError(ctx, "Error: " + e.getMessage());
+        }
+    }
 }
