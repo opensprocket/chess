@@ -34,4 +34,28 @@ public class WebSocketCommunicator {
         // Connection opened
         this.session = session;
     }
+
+    @OnMessage
+    public void onMessage(String message) {
+        try {
+            ServerMessage serverMessage = gson.fromJson(message, ServerMessage.class);
+
+            switch (serverMessage.getServerMessageType()) {
+                case LOAD_GAME -> {
+                    LoadGameMessage loadMsg = gson.fromJson(message, LoadGameMessage.class);
+                    notificationHandler.onLoadGame(loadMsg.getGame());
+                }
+                case ERROR -> {
+                    ErrorMessage errorMsg = gson.fromJson(message, ErrorMessage.class);
+                    notificationHandler.onError(errorMsg.getErrorMessage());
+                }
+                case NOTIFICATION -> {
+                    NotificationMessage notifMsg = gson.fromJson(message, NotificationMessage.class);
+                    notificationHandler.onNotification(notifMsg.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            notificationHandler.onError("Error processing message: " + e.getMessage());
+        }
+    }
 }
