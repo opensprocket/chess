@@ -149,3 +149,23 @@ public class GameplayUI implements WebSocketCommunicator.NotificationHandler {
         }
     }
 
+    private void resign() {
+        if (isObserver) {
+            System.out.println("Observers cannot resign.");
+            return;
+        }
+
+        System.out.print("Are you sure you want to resign? (yes/no): ");
+        String confirmation = scanner.nextLine().trim().toLowerCase();
+
+        if (confirmation.equals("yes") || confirmation.equals("y")) {
+            try {
+                ws.resign(authToken, gameID);
+            } catch (Exception e) {
+                System.out.println("Error resigning: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Resignation cancelled.");
+        }
+    }
+
