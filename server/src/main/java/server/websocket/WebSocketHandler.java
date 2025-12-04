@@ -148,10 +148,9 @@ public class WebSocketHandler {
             );
             dataAccess.updateGame(command.getGameID(), updatedGame);
 
-            // Broadcast LOAD_GAME to all clients (including root)
+            // Broadcast LOAD_GAME to all clients in the game
             LoadGameMessage loadGameMessage = new LoadGameMessage(game);
             connections.broadcast(command.getGameID(), loadGameMessage, null);
-            connections.sendToClient(command.getGameID(), command.getAuthToken(), loadGameMessage);
 
             // Send move notification to others (not to root)
             String moveNotification = username + " made move: " + formatMove(move);
@@ -167,17 +166,14 @@ public class WebSocketHandler {
                         username + " wins!";
                 NotificationMessage notification = new NotificationMessage(checkmateMsg);
                 connections.broadcast(command.getGameID(), notification, null);
-                connections.sendToClient(command.getGameID(), command.getAuthToken(), notification);
             } else if (game.isInStalemate(opponentColor)) {
                 String stalemateMsg = "Game ended in stalemate";
                 NotificationMessage notification = new NotificationMessage(stalemateMsg);
                 connections.broadcast(command.getGameID(), notification, null);
-                connections.sendToClient(command.getGameID(), command.getAuthToken(), notification);
             } else if (game.isInCheck(opponentColor)) {
                 String checkMsg = getPlayerName(gameData, opponentColor) + " is in check";
                 NotificationMessage notification = new NotificationMessage(checkMsg);
                 connections.broadcast(command.getGameID(), notification, null);
-                connections.sendToClient(command.getGameID(), command.getAuthToken(), notification);
             }
 
         } catch (InvalidMoveException e) {
@@ -267,11 +263,10 @@ public class WebSocketHandler {
             gameData.game().setGameOver(true);
             dataAccess.updateGame(command.getGameID(), gameData);
 
-            // Notify all clients (including root)
+            // Notify all clients (send to everyone including root)
             String notification = username + " resigned. Game over.";
             NotificationMessage message = new NotificationMessage(notification);
             connections.broadcast(command.getGameID(), message, null);
-            connections.sendToClient(command.getGameID(), command.getAuthToken(), message);
 
         } catch (Exception e) {
             sendError(ctx, "Error: " + e.getMessage());
