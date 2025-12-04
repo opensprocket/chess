@@ -227,3 +227,22 @@ public class GameplayUI implements WebSocketCommunicator.NotificationHandler {
         };
     }
 
+    // NotificationHandler methods
+    @Override
+    public void onLoadGame(ChessGame game) {
+        this.currentGame = game;
+        System.out.println("\n=== Game Updated ===");
+        DisplayGameboard.drawBoard(game.getBoard(),
+                isObserver ? ChessGame.TeamColor.WHITE : playerColor);
+    }
+
+    @Override
+    public void onError(String errorMessage) {
+        System.out.println("\n" + errorMessage);
+    }
+
+    @Override
+    public void onNotification(String message) {
+        System.out.println("\n>>> " + message);
+    }
+}
