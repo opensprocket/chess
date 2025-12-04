@@ -285,4 +285,10 @@ public class WebSocketHandler {
             System.err.println("Failed to send error: " + e.getMessage());
         }
     }
+
+    private String formatMove(ChessMove move) {
+        return positionToString(move.getStartPosition()) + " to " +
+                positionToString(move.getEndPosition());
+    }
+
 }
