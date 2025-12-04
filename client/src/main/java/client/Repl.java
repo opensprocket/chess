@@ -1,15 +1,21 @@
 package client;
-import ui.EscapeSequences;
+
 import java.util.Scanner;
+import ui.EscapeSequences;
 
 public class Repl {
     private final ChessClient client;
 
     public Repl(String serverUrl) {
-        client = new ChessClient(serverUrl);
+        Scanner scanner = new Scanner(System.in);
+        client = new ChessClient(serverUrl, scanner);
     }
 
     public void run() {
+        System.out.println(EscapeSequences.WHITE_KING + " Welcome to Chess! " +
+                EscapeSequences.BLACK_KING);
+        System.out.println("Type 'help' to get started.");
+
         Scanner scanner = new Scanner(System.in);
         var result = "";
         boolean run = true;
@@ -34,13 +40,11 @@ public class Repl {
                 String msg = e.getMessage();
                 System.out.print(msg);
             }
-            System.out.println();
-
-//            System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE + "You typed: " + line);
         }
+        System.out.println("Goodbye!");
     }
 
     private void printPrompt() {
-        System.out.print(EscapeSequences.RESET_TEXT_COLOR + "[ " + client.getState() + " ] >>> " + EscapeSequences.SET_TEXT_COLOR_GREEN);
+        System.out.print("\n" + EscapeSequences.RESET_TEXT_COLOR + "[" + client.getState() + "] " + ">>> " + EscapeSequences.SET_TEXT_COLOR_GREEN);
     }
 }

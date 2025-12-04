@@ -3,8 +3,8 @@ package client;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
-import chess.ChessBoard;
 import chess.ChessGame;
 import chess.datamodel.*;
 
@@ -12,14 +12,16 @@ public class ChessClient {
 
     private final String serverUrl;
     private final ServerFacade server;
+    private final Scanner scanner;
     private State state;
     private String authToken = null;
     private List<GameInfo> gameList = null;
+    private WebSocketCommunicator webSocket = null;
 
-    public ChessClient(String serverUrl) {
-
+    public ChessClient(String serverUrl, Scanner scanner) {
         this.serverUrl = serverUrl;
         this.server = new ServerFacade(serverUrl);
+        this.scanner = scanner;
         this.state = State.SIGNED_OUT;
     }
 
@@ -74,6 +76,10 @@ public class ChessClient {
 
     private String logout() throws FacadeException {
         assertSignedIn();
+        if (webSocket != null) {
+            webSocket.close();
+            webSocket = null;
+        }
         server.logout(this.authToken);
         this.authToken = null;
         this.gameList = null;
@@ -113,7 +119,7 @@ public class ChessClient {
         return sb.toString();
     }
 
-    private String joinGame(String[] params) throws FacadeException, NumberFormatException {
+    private String joinGame(String[] params) throws FacadeException {
         assertSignedIn();
 
         // call out to server for game_id
@@ -122,7 +128,7 @@ public class ChessClient {
                 try {
                     listGames();
                 } catch (Exception ex) {
-                    throw new RuntimeException("You must create a game before attempting to join one");
+                    throw new RuntimeException("You must list games before joining");
                 }
             }
 
@@ -131,71 +137,110 @@ public class ChessClient {
             try {
                 gameNumber = Integer.parseInt(params[0]);
             } catch (NumberFormatException ex) {
-                throw new RuntimeException("Invalid game number, please enter a number");
+                throw new RuntimeException("Invalid game number");
             }
 
             if (gameNumber < 1 || gameNumber > this.gameList.size()) {
-                throw new RuntimeException("Invalid game number, run 'list' to see all valid choices");
+                throw new RuntimeException("Invalid game number");
             }
 
             int gameID = this.gameList.get(gameNumber - 1).gameID();
-
             String playerColor = params[1].toUpperCase();
+
             if (!"WHITE".equals(playerColor) && !"BLACK".equals(playerColor)) {
-                throw new RuntimeException("Invalid color, must be [WHITE|white] or [BLACK|black]");
+                throw new RuntimeException("Invalid color, must be WHITE or BLACK");
             }
 
+            // Join via HTTP first
             server.joinGame(gameID, playerColor, this.authToken);
-            state = State.IN_GAME;
 
-            ChessGame.TeamColor perspective = (playerColor.equalsIgnoreCase("white")) ?
-                    ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+            // Connect via WebSocket
+            try {
+                ChessGame.TeamColor color = playerColor.equalsIgnoreCase("white") ?
+                        ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
 
-            ChessBoard board = new ChessBoard();
-            board.resetBoard();
-            DisplayGameboard.drawBoard(board, perspective);
+                webSocket = new WebSocketCommunicator(serverUrl,
+                        new GameplayUI(scanner, null, authToken, gameID, color, false));
 
-            return String.format("Joined game #%d as %s", gameNumber, playerColor);
+                GameplayUI gameplayUI = new GameplayUI(scanner, webSocket, authToken, gameID, color, false);
+                webSocket = new WebSocketCommunicator(serverUrl, gameplayUI);
 
+                webSocket.connect(authToken, gameID);
+                state = State.IN_GAME;
+
+                // Enter gameplay loop
+                gameplayUI.run();
+
+                // Clean up after leaving game
+                webSocket.close();
+                webSocket = null;
+                state = State.SIGNED_IN;
+
+                return "Returned to lobby";
+
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to connect to game: " + e.getMessage());
+            }
         }
-        return "Expected <game number> [WHITE|BLACK]";
+        return "Expected: <game number> [WHITE|BLACK]";
     }
 
-    private String joinAsObserver(String[] params) throws FacadeException, NumberFormatException {
+    private String joinAsObserver(String[] params) throws FacadeException {
         assertSignedIn();
+
         if (params.length == 1) {
             if (this.gameList == null) {
                 try {
                     listGames();
                 } catch (Exception ex) {
-                    throw new RuntimeException("You must create a game before attempting to join one");
+                    throw new RuntimeException("You must list games before observing");
                 }
             }
 
-            int gameNumber = Integer.parseInt(params[0]);
+            int gameNumber;
+            try {
+                gameNumber = Integer.parseInt(params[0]);
+            } catch (NumberFormatException ex) {
+                throw new RuntimeException("Invalid game number");
+            }
+
             if (gameNumber < 1 || gameNumber > this.gameList.size()) {
-                throw new RuntimeException("Invalid game number, run 'list' to see all valid choices");
+                throw new RuntimeException("Invalid game number");
             }
 
             int gameID = this.gameList.get(gameNumber - 1).gameID();
-            state = State.OBSERVING_GAME;
 
-            ChessBoard board = new ChessBoard();
-            board.resetBoard();
-            DisplayGameboard.drawBoard(board, ChessGame.TeamColor.WHITE);
+            // Connect via WebSocket as observer
+            try {
+                GameplayUI gameplayUI = new GameplayUI(scanner, null, authToken, gameID,
+                        ChessGame.TeamColor.WHITE, true);
+                webSocket = new WebSocketCommunicator(serverUrl, gameplayUI);
 
-            return String.format("Observing game %s", gameNumber);
+                webSocket.connect(authToken, gameID);
+                state = State.OBSERVING_GAME;
+
+                // Enter gameplay loop
+                gameplayUI.run();
+
+                // Clean up after leaving game
+                webSocket.close();
+                webSocket = null;
+                state = State.SIGNED_IN;
+
+                return "Returned to lobby";
+
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to observe game: " + e.getMessage());
+            }
         }
         return "Expected: <game number>";
     }
-
-
 
     private String help() {
         if (state == State.SIGNED_OUT) {
             return """
                     Commands available:
-                    - register <username> <password <email>
+                    - register <username> <password> <email>
                     - login <username> <password>
                     - quit
                     - help
@@ -221,7 +266,6 @@ public class ChessClient {
     }
 
     public String getState() {
-
         return switch (state) {
             case State.SIGNED_OUT ->        "Logged Out";
             case State.SIGNED_IN ->         "Logged In ";
@@ -230,5 +274,4 @@ public class ChessClient {
             default -> "Error State";
         };
     }
-
 }
