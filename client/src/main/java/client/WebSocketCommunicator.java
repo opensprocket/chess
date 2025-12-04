@@ -89,4 +89,9 @@ public class WebSocketCommunicator {
         sendMessage(command);
     }
 
+    private void sendMessage(Object command) throws IOException {
+        String jsonMessage = gson.toJson(command);
+        this.session.getBasicRemote().sendText(jsonMessage);
+    }
+
 }
