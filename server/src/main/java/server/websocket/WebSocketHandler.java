@@ -278,4 +278,11 @@ public class WebSocketHandler {
         }
     }
 
+    private void sendError(WsMessageContext ctx, String errorMessage) {
+        try {
+            ctx.send(gson.toJson(new ErrorMessage(errorMessage)));
+        } catch (Exception e) {
+            System.err.println("Failed to send error: " + e.getMessage());
+        }
+    }
 }
