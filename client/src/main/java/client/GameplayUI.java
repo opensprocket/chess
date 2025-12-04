@@ -110,3 +110,42 @@ public class GameplayUI implements WebSocketCommunicator.NotificationHandler {
         }
     }
 
+    private void makeMove(String[] tokens) {
+        if (isObserver) {
+            System.out.println("Observers cannot make moves.");
+            return;
+        }
+
+        if (tokens.length < 3) {
+            System.out.println("Usage: move <from> <to> [promotion]");
+            System.out.println("Example: move e2 e4");
+            System.out.println("Example: move e7 e8 q (for pawn promotion to queen)");
+            return;
+        }
+
+        try {
+            ChessPosition start = parsePosition(tokens[1]);
+            ChessPosition end = parsePosition(tokens[2]);
+
+            ChessPiece.PieceType promotion = null;
+            if (tokens.length > 3) {
+                promotion = parsePromotionPiece(tokens[3]);
+            }
+
+            ChessMove move = new ChessMove(start, end, promotion);
+
+            // Validate move locally before sending
+            if (currentGame != null) {
+                Collection<ChessMove> validMoves = currentGame.validMoves(start);
+                if (validMoves == null || !validMoves.contains(move)) {
+                    System.out.println("Error: Invalid move");
+                    return;
+                }
+            }
+
+            ws.makeMove(authToken, gameID, move);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
