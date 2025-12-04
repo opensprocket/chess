@@ -80,3 +80,15 @@ public class GameplayUI implements WebSocketCommunicator.NotificationHandler {
         }
     }
 
+    private void displayHelp() {
+        System.out.println("\nAvailable commands:");
+        System.out.println("  help              - Display this help message");
+        System.out.println("  redraw            - Redraw the chess board");
+        System.out.println("  leave             - Leave the game");
+        if (!isObserver) {
+            System.out.println("  move <from> <to>  - Make a move (e.g., 'move e2 e4')");
+            System.out.println("  resign            - Resign from the game");
+        }
+        System.out.println("  highlight <pos>   - Highlight legal moves for a piece (e.g., 'highlight e2')");
+    }
+
