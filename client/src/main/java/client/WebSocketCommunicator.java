@@ -69,4 +69,9 @@ public class WebSocketCommunicator {
         System.err.println("WebSocket error: " + throwable.getMessage());
     }
 
+    public void connect(String authToken, Integer gameID) throws IOException {
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+        sendMessage(command);
+    }
+
 }
