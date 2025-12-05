@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class GameplayUI implements WebSocketCommunicator.NotificationHandler {
     private final Scanner scanner;
-    private final WebSocketCommunicator ws;
+    private WebSocketCommunicator ws;
     private final String authToken;
     private final Integer gameID;
     private final ChessGame.TeamColor playerColor;
@@ -22,6 +22,10 @@ public class GameplayUI implements WebSocketCommunicator.NotificationHandler {
         this.gameID = gameID;
         this.playerColor = playerColor;
         this.isObserver = isObserver;
+    }
+
+    public void setWebSocket(WebSocketCommunicator ws) {
+        this.ws = ws;
     }
 
     public void run() {
