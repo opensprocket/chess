@@ -159,11 +159,9 @@ public class ChessClient {
                 ChessGame.TeamColor color = playerColor.equalsIgnoreCase("white") ?
                         ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
 
-                webSocket = new WebSocketCommunicator(serverUrl,
-                        new GameplayUI(scanner, null, authToken, gameID, color, false));
-
-                GameplayUI gameplayUI = new GameplayUI(scanner, webSocket, authToken, gameID, color, false);
+                GameplayUI gameplayUI = new GameplayUI(scanner, null, authToken, gameID, color, false);
                 webSocket = new WebSocketCommunicator(serverUrl, gameplayUI);
+                gameplayUI.setWebSocket(webSocket);
 
                 webSocket.connect(authToken, gameID);
                 state = State.IN_GAME;
@@ -215,6 +213,7 @@ public class ChessClient {
                 GameplayUI gameplayUI = new GameplayUI(scanner, null, authToken, gameID,
                         ChessGame.TeamColor.WHITE, true);
                 webSocket = new WebSocketCommunicator(serverUrl, gameplayUI);
+                gameplayUI.setWebSocket(webSocket);
 
                 webSocket.connect(authToken, gameID);
                 state = State.OBSERVING_GAME;
