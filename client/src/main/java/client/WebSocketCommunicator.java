@@ -61,7 +61,7 @@ public class WebSocketCommunicator {
 
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
-        System.out.println("WebSocket closed: " + closeReason.getReasonPhrase());
+        System.out.println("WebSocket closed. " + closeReason.getReasonPhrase());
     }
 
     @OnError
